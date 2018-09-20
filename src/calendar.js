@@ -22,6 +22,25 @@ function makeEmptyCalendar() {
 }
 
 /*
+* calendarAt(day, time, value, updateUI)
+* @var day is the day of the week from 0 to 6 (0 is monday)
+* @var time is the from time (hour + 0.5 if 30)
+* @var value (optional) is the availability value to set
+* @var updateUI (optional) if true refreshes screen
+* @return value if value not defined
+*/
+function calendarAt(day, time, value = undefined, updateUI = false) {
+	if (value === undefined) {
+		return calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day];
+	} else {
+		calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day] = value;
+		if (updateUI) {
+			setAvailability(day, time, value);
+		}
+	}
+}
+
+/*
 * drawCalendar() - Redraws the calendar
 */
 function drawCalendar() {
@@ -86,10 +105,10 @@ function changeTool(tool) {
 * setAvailability(day, time, tool) - Sets the availability for a given time slot
 * @var day is the day of the week from 0 to 6 (0 is monday)
 * @var time is the from time (hour + 0.5 if 30)
-* @var tool (optional) is the availbility value to set
+* @var tool (optional) is the availability value to set
 */
 function setAvailability(day, time, tool = dynamic['tool']) {
-	calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day] = tool;
+	calendarAt(day, time, tool);
 	$('td[data-day="' + day + '"][data-time="' + time + '"]').removeClass('table-success');
 	$('td[data-day="' + day + '"][data-time="' + time + '"]').removeClass('table-warning');
 	$('td[data-day="' + day + '"][data-time="' + time + '"]').removeClass('table-danger');
@@ -114,6 +133,8 @@ function toggleTouch() {
 	$('table').toggleClass('table-sm');
 	$('.btn-group').toggleClass('btn-group-sm');
 	$('.btn').toggleClass('btn-sm');
+	$('body').toggleClass('minWidth-nonTch');
+	$('body').toggleClass('minWidth-touch');
 }
 
 // Startup
