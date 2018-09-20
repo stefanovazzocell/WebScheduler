@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<title>Scheduler</title>
+	</head>
+	<body>
+		<nav class="navbar navbar-dark bg-dark">
+			<span class="navbar-brand">Web Scheduler</span>
+			<a class="btn btn-outline-light btn-sm" href="/login/">CPSC 110</a>
+		</nav>
+		<div class="container-fluid"><br>
+			<h3>Hello, <span id="name">Stefano</span></h3><br>
+			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+				<button type="button" class="btn btn-sm btn-light">Pull Schedule</button>
+				<button type="button" class="btn btn-sm btn-dark">Push Schedule</button>
+				<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
+			</div><br><br>
+			<div class="btn-group btn-group-sm" id="tool" role="group" aria-label="Tool">
+				<button type="button" onclick="changeTool(0);" class="btn btn-sm btn-success">Available</button>
+				<button type="button" onclick="changeTool(1);" class="btn btn-sm btn-warning font-weight-bold">Prefer Not</button>
+				<button type="button" onclick="changeTool(2);" class="btn btn-sm btn-danger">Not Available</button>
+			</div><br>
+			<span>The current mode is <b class="tool">Prefer Not</b></span><br><br>
+			<table class="table table-bordered table-sm" style="text-align: center;">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">From</th>
+						<th scope="col"> To </th>
+						<th scope="col" class="dw" data-day="0">MON</th>
+						<th scope="col" class="dw" data-day="1">TUE</th>
+						<th scope="col" class="dw" data-day="2">WED</th>
+						<th scope="col" class="dw" data-day="3">THU</th>
+						<th scope="col" class="dw" data-day="4">FRI</th>
+						<th scope="col" class="dw" data-day="5">SAT</th>
+						<th scope="col" class="dw" data-day="6">SUN</th>
+					</tr>
+				</thead>
+				<tbody id="calendar">
+				</tbody>
+			</table>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<script src="calendar.js"></script>
+	</body>
+</html>
