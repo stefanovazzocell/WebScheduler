@@ -1,0 +1,14 @@
+/* Day of the week */
+.dw {
+	min-width: 50px;
+}
+
+/* Selected time slot */
+.sts {
+	opacity: 0.3;
+}
+
+/* Over time slot */
+.ots {
+	opacity: 0.5;
+}
