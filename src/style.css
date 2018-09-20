@@ -1,3 +1,14 @@
+.minWidth-touch {
+	/*min-width: 480px;*/
+}
+.minWidth-nonTch {
+	/*min-width: 560px;*/
+}
+
+table {
+	max-width: 90vw;
+}
+
 /* Day of the week */
 .dw {
 	min-width: 50px;
