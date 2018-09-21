@@ -7,13 +7,54 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<title>Scheduler</title>
 	</head>
-	<body class="minWidth-touch">
+	<body>
 		<nav class="navbar navbar-dark bg-dark">
 			<span class="navbar-brand">Web Scheduler</span>
-			<a class="btn btn-outline-light btn-sm" href="/login/">CPSC 110</a>
+			<button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#account">My Account</button>
 		</nav>
+		<div class="modal fade" id="account" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">My Account</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p class="text-primary">Account Settings</p>
+						<form>
+							<div class="input-group input-group-sm mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+								</div>
+								<input value="Stefano Vazzoler" type="text" id="name" class="form-control" autocomplete="off">
+							</div>
+							<div class="input-group input-group-sm mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+								</div>
+								<input value="stefano@localhost" type="email" id="email" class="form-control" autocomplete="off">
+							</div>
+							<input type="submit" class="btn btn-sm btn-primary" value="Update"></input>
+						</form>
+					</div>
+					<hr>
+					<div class="modal-body">
+						<p class="text-danger">Danger Zone!</p>
+						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+							<button type="button" class="btn btn-sm btn-warning">Reset Password</button>
+							<button type="button" class="btn btn-sm btn-danger">Delete Account</button>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="container-fluid"><br>
-			<h3>Hello, <span id="name">Stefano</span></h3><br>
+			<h4>Hello, <span id="name">Stefano</span></h4><br>
 			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
 				<button type="button" class="btn btn-sm btn-light">Pull Schedule</button>
 				<button type="button" class="btn btn-sm btn-dark">Push Schedule</button>
@@ -25,7 +66,8 @@
 				<button type="button" onclick="changeTool(2);" class="btn btn-sm btn-danger">Not Available</button>
 			</div><br>
 			<span>The current mode is <b class="tool">Prefer Not</b></span><br><br>
-			<table class="table table-bordered table-sm" style="text-align: center;">
+			<div class="table-wrapper">
+				<table class="table table-bordered table-sm" style="text-align: center;">
 				<thead class="thead-dark">
 					<tr>
 						<th scope="col">From</th>
@@ -42,6 +84,7 @@
 				<tbody id="calendar">
 				</tbody>
 			</table>
+			</div>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
