@@ -216,7 +216,7 @@ $().ready(function () {
 	}).mouseup(function() {
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
-		if (dynamic['sel_start'][0] !== thisDay && dynamic['sel_start'][0] !== thisTime) {
+		if (dynamic['sel_start'][0] !== thisDay || dynamic['sel_start'][1] !== thisTime) {
 			if (dynamic['sel_start'] != false) {
 				// Commit a selection
 				let minDay = Math.min(dynamic['sel_start'][0], thisDay);
