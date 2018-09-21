@@ -3,7 +3,8 @@ var calendar = []
 
 var dynamic = {
 	'tool': 1,
-	'sel_start': false
+	'sel_start': false,
+	'isTouch': false
 }
 
 var settings = {
@@ -133,13 +134,20 @@ function toggleTouch() {
 	$('table').toggleClass('table-sm');
 	$('.btn-group').toggleClass('btn-group-sm');
 	$('.btn').toggleClass('btn-sm');
-	$('body').toggleClass('minWidth-nonTch');
-	$('body').toggleClass('minWidth-touch');
+	$('input[type="button"]').toggleClass('btn-sm');
+	$('.input-group').toggleClass('input-group-sm');
 }
 
 // Startup
 $().ready(function () {
 	makeEmptyCalendar();
+
+	// Detect if touch enabled
+	dynamic['isTouch'] = (('ontouchstart' in window) || (window.DocumentTouch && document instanceof DocumentTouch));
+	if (dynamic['isTouch']) {
+		toggleTouch();
+	}	
+
 	drawCalendar();
 
 	// Deal with selection
