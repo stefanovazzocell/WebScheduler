@@ -4,8 +4,7 @@ var calendar = []
 var dynamic = {
 	'tool': 1,
 	'sel_start': false,
-	'isTouch': false,
-	'd&d': false
+	'isTouch': false
 }
 
 var settings = {
@@ -167,44 +166,17 @@ $().ready(function () {
 		$('th[data-day="' + thisDay + '"]').removeClass('ots');
 		$('th[data-day="' + thisDay + '"]').removeClass('text-primary');
 	}).mousedown(function() {
-		console.warn('down');
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
-		$(this).addClass('sts');
-		dynamic['sel_start'] = [thisDay, thisTime];
+		if (dynamic['sel_start'] === false) {
+			$(this).addClass('sts');
+			dynamic['sel_start'] = [thisDay, thisTime];
+		}
 	}).mouseup(function() {
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
-		if (dynamic['sel_start'] !== [thisDay, thisTime]) {
-			console.warn('up');
+		if (dynamic['sel_start'][0] !== thisDay && dynamic['sel_start'][0] !== thisTime) {
 			if (dynamic['sel_start'] != false) {
-				// Commit a selection
-				let minDay = Math.min(dynamic['sel_start'][0], thisDay);
-				let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
-				let minTime = Math.min(dynamic['sel_start'][1], thisTime);
-				let maxTime = Math.max(dynamic['sel_start'][1], thisTime);
-				for (let day = minDay; day <= maxDay; day++) {
-					for (let time = minTime; time <= maxTime; time+=0.5) {
-						setAvailability(day, time);
-					}
-				}
-				$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
-				// Close selection
-				dynamic['sel_start'] = false;
-			}
-		}
-	});
-
-	$('td').click(function () {
-		let thisDay = parseInt($(this).attr('data-day'));
-		let thisTime = parseFloat($(this).attr('data-time'));
-		if (dynamic['sel_start'] !== [thisDay, thisTime]) {
-			console.warn('click');
-			if (dynamic['sel_start'] === false) {
-				// Start a new selection
-				$(this).addClass('sts');
-				dynamic['sel_start'] = [thisDay, thisTime];
-			} else {
 				// Commit a selection
 				let minDay = Math.min(dynamic['sel_start'][0], thisDay);
 				let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
