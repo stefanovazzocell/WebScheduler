@@ -73,6 +73,7 @@ function drawCalendar() {
 		outputHtml += '</tr>';
 	}
 	$('#calendar').html(outputHtml);
+	$('#alert-loading').hide();
 }
 
 /*
@@ -136,6 +137,46 @@ function toggleTouch() {
 	$('.btn').toggleClass('btn-sm');
 	$('input[type="button"]').toggleClass('btn-sm');
 	$('.input-group').toggleClass('input-group-sm');
+}
+
+/*
+* getRandom(min, max) - generates a random number
+* @var min is smallest number (inclusive)
+* @var max is biggest number (exclusive)
+* @return random integer in specified range
+*/
+function getRandom(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+}
+
+/*
+* resetPassword() - Resets the user password
+*/
+function resetPassword() {
+	if (confirm('This will log you out, are you sure?')) {
+		window.location.replace('/');
+	}
+}
+
+/*
+* deleteAccount() - Deletes the user password
+*/
+function deleteAccount() {
+	let challenge = [
+		getRandom(0,100), // Initial
+		getRandom(0,100), // Add
+		getRandom(3,10),  // Power
+		getRandom(0,100), // Mod
+	];
+	challenge[4] = Math.pow((challenge[0] + challenge[1]),  challenge[2]) % challenge[3];
+	if (confirm('This will delete your schedule from the server and delete your account, are you sure?')) {
+		// Check if TA drinked too much at the TA social
+		if (parseInt(prompt('What is the result of (modulo (expt (+ ' + challenge[0] + ' ' + challenge[1] + ') ' + challenge[2] + ') ' + challenge[3] + ') ?')) == challenge[4]) {
+			window.location.replace('/');
+		} else {
+			alert('Did you drink too much at the TA social?\nDeletion denied');
+		}
+	}
 }
 
 // Startup
