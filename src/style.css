@@ -5,6 +5,11 @@ body {
 .table-wrapper {
 	overflow: auto;
 	width: 100%;
+	/* disabled text selection */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 /* Day of the week */
