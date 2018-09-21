@@ -43,8 +43,8 @@
 					<div class="modal-body">
 						<p class="text-danger">Danger Zone!</p>
 						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
-							<button type="button" class="btn btn-sm btn-warning">Reset Password</button>
-							<button type="button" class="btn btn-sm btn-danger">Delete Account</button>
+							<button type="button" class="btn btn-sm btn-warning" onclick="resetPassword();">Reset Password</button>
+							<button type="button" class="btn btn-sm btn-danger" onclick="deleteAccount();">Delete Account</button>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -54,6 +54,9 @@
 			</div>
 		</div>
 		<div class="container-fluid"><br>
+			<div class="alert alert-warning" id="alert-loading">
+				Please wait while we load your schedule...
+			</div>
 			<h4>Hello, <span id="name">Stefano</span></h4><br>
 			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
 				<button type="button" class="btn btn-sm btn-light">Pull Schedule</button>
