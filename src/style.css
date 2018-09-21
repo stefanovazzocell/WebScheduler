@@ -1,12 +1,10 @@
-.minWidth-touch {
-	/*min-width: 480px;*/
-}
-.minWidth-nonTch {
-	/*min-width: 560px;*/
+body {
+	min-width: 360px;
 }
 
-table {
-	max-width: 90vw;
+.table-wrapper {
+	overflow: auto;
+	width: 100%;
 }
 
 /* Day of the week */
@@ -22,4 +20,9 @@ table {
 /* Over time slot */
 .ots {
 	opacity: 0.5;
+}
+
+hr { 
+	background-color: black;
+	width: 80%;
 }
