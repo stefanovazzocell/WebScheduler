@@ -40,7 +40,7 @@ var dynamic = {
 
 // "Constant" settings
 var settings = {
-	'days': ['Monday', 'Tuesday', 'Thursday', 'Wednesday', 'Friday', 'Saturday', 'Sunday'],
+	'days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
 	'fromto': [8, 21]
 }
 
