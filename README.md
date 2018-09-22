@@ -1,6 +1,8 @@
 # WebScheduler
 A web scheduler to aid the scheduling of TA hours
 
+Check out latest version at (https://stefanovazzocell.github.io/WebScheduler/src/)[https://stefanovazzocell.github.io/WebScheduler/src/]
+
 ## Architecture
 
 `MySQL <-local-> NodeJS <-local-> Nginx <-https-> CloudFlare* <-https-> User's Browser`
