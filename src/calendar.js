@@ -1,14 +1,46 @@
+'use strict';
 
-var calendar = []
+var calendar = [];
+
+// Current schedule for this user
+var userSchedule = [
+	{
+		'title': 'L1E',
+		'type': 'Laboratory',
+		'room': 'X260',
+		'day': 2,
+		'from': 10.5,
+		'to': 12.5
+	},
+	{
+		'title': 'L1A',
+		'type': 'Laboratory',
+		'room': 'X250',
+		'day': 4,
+		'from': 9,
+		'to': 12
+	},
+	{
+		'title': 'MTG',
+		'type': 'Meeting',
+		'room': 'X800',
+		'day': 3,
+		'from': 17,
+		'to': 18
+	}
+];
 
 var dynamic = {
 	'tool': 1,
+	'mouseMsg': false,
 	'sel_start': false,
-	'isTouch': false
-}
+	'isTouch': false,
+	'authHash': window.location.hash.slice(1)
+};
 
+// "Constant" settings
 var settings = {
-	//'days': ['MON', 'TUE', 'THU', 'WED', 'FRI', 'SAT', 'SUN'],
+	'days': ['Monday', 'Tuesday', 'Thursday', 'Wednesday', 'Friday', 'Saturday', 'Sunday'],
 	'fromto': [8, 21]
 }
 
@@ -42,12 +74,49 @@ function calendarAt(day, time, value = undefined, updateUI = false) {
 }
 
 /*
+* isThisNow(day, time) - checks if the given day + time is now
+* @var day is the day of the week from 0 to 6 (0 is monday)
+* @var time is the from time (hour + 0.5 if 30)
+* @var delta (optional) is used to calculate the timeframe (0.5 = 30 minutes)
+*/
+function isThisNow(day, time, delta = 0.5) {
+	let now = new Date();
+	let timeNow = now.getHours();
+	timeNow += (now.getMinutes() / 60);
+	let dayNow = (now.getDay() + 6) % 7;
+	return (day == dayNow && time <= timeNow && timeNow <= (time + delta));
+}
+
+/*
+* uiMessage() - loads the custom welcome message for a TA
+*/
+function uiMessage() {
+	let messages = [
+		'👨‍💻 <code>(string-append "Hello" " " "World")</code>',
+		'👨‍💻 <code>System.out.println("Hello World");</code>',
+		'👨‍💻 <code>printf("Hello, World!");</code>',
+		'<b>G. is watching you 🧔</b>',
+		'<b>Have a nice day! ⛅</b>',
+		'<b>Be awesome! ✨</b>',
+		'"<i>Trey, we have a problem.</i> 📧"',
+		'<b>Have lots of fun! 💻</b>',
+		'<b>Autograder is on fire 🔥</b>'
+	];
+	let message = messages[getRandom(0, messages.length -1)];
+	if (userSchedule.length == 0) {
+		//
+	}
+	$('.message').html(message);
+}
+
+/*
 * drawCalendar() - Redraws the calendar
 */
 function drawCalendar() {
 	let outputHtml = '';
 	for (let time = settings['fromto'][0]; time < settings['fromto'][1]; time+=0.5) {
 		outputHtml += '<tr>';
+		// --- TIME ---
 		let pre = Math.trunc(time) % 12;
 		let post = pre;
 		if ((time % 12) - pre == 0) {
@@ -65,10 +134,24 @@ function drawCalendar() {
 			post += 1;
 			post += ':00';
 		}
+		// --- TIME ---
 		outputHtml += '<th scope="row" data-hour=' + time + '>' + pre + '</th>';
 		outputHtml += '<th scope="row" data-hour=' + time + '>' + post + '</th>';
 		for (let day = 0; day < 7; day++) {
-			outputHtml += '<td class="table-success" data-day="' + day + '" data-time="' + time + '"></td>';
+			let message = '';
+			for (var i = 0; i < userSchedule.length; i++) {
+				if (userSchedule[i]['day'] == day && userSchedule[i]['from'] <= time && userSchedule[i]['to'] > time) {
+					if (message != '') {
+						message += ', ';
+					}
+					message += userSchedule[i]['title'];
+				}
+			}
+			let isNowClass = '';
+			if (isThisNow(day, time)) {
+				isNowClass = ' now';
+			}
+			outputHtml += '<td class="table-success' + isNowClass + '" data-day="' + day + '" data-time="' + time + '">' + message + '</td>';
 		}
 		outputHtml += '</tr>';
 	}
@@ -142,11 +225,11 @@ function toggleTouch() {
 /*
 * getRandom(min, max) - generates a random number
 * @var min is smallest number (inclusive)
-* @var max is biggest number (exclusive)
+* @var max is biggest number (inclusive)
 * @return random integer in specified range
 */
 function getRandom(min, max) {
-    return Math.round(Math.random() * (max - min) + min);
+	return Math.round(Math.random() * (max - min) + min);
 }
 
 /*
@@ -155,6 +238,53 @@ function getRandom(min, max) {
 function resetPassword() {
 	if (confirm('This will log you out, are you sure?')) {
 		window.location.replace('/');
+	}
+}
+
+/*
+* addMouseMsg(message) - adds a mouse message
+* @var message is message to show
+*/
+function addMouseMsg(message) {
+	dynamic['mouseMsg'] = message;
+}
+
+/*
+* resetMouseMsg() - removes the mouse message
+*/
+function resetMouseMsg() {
+	dynamic['mouseMsg'] = false;
+	$('#mouseMsg').html('');
+}
+
+/*
+* showSelectionMsg(day, time) - shows the selection as a mouse message
+* @var day is the day of the week from 0 to 6 (0 is monday)
+* @var time is the from time (hour + 0.5 if 30)
+*/
+function showSelectionMsg(day, time) {
+	if (dynamic['sel_start'] === false) {
+		let timeFormat = time + ':00 to ' + time + ':30';
+		if (Math.trunc(time) != time) {
+			timeFormat = Math.trunc(time) + ':30 to ' + Math.trunc(time + 1) + ':00';
+		}
+		addMouseMsg(settings['days'][day] + ', ' + timeFormat);
+	} else {
+		let dtFormat = settings['days'][Math.min(day, dynamic['sel_start'][0])] + ' to ' + settings['days'][Math.max(day, dynamic['sel_start'][0])] + ', ';
+		if (day == dynamic['sel_start'][0]) dtFormat = settings['days'][day] + ', ';
+		let timeStart = Math.min(time, dynamic['sel_start'][1]);
+		let timeEnd = Math.max(time, dynamic['sel_start'][1]) + 0.5;
+		if (Math.trunc(timeStart) == timeStart) {
+			dtFormat += timeStart + ':00 to '
+		} else {
+			dtFormat += Math.trunc(timeStart) + ':30 to '
+		}
+		if (Math.trunc(timeEnd) == timeEnd) {
+			dtFormat += timeEnd + ':00'
+		} else {
+			dtFormat += Math.trunc(timeEnd) + ':30'
+		}
+		addMouseMsg(dtFormat);
 	}
 }
 
@@ -189,19 +319,30 @@ $().ready(function () {
 		toggleTouch();
 	}	
 
+	uiMessage();
 	drawCalendar();
+
+	// Mouse Message
+	$(document).mousemove(function(e){
+		if (dynamic['mouseMsg']) {
+			var cpos = { top: e.pageY + 10, left: e.pageX + 10 };
+			$('#mouseMsg').offset(cpos).html(dynamic['mouseMsg']);
+		}
+	});
 
 	// Deal with click selection
 	$('td').mouseenter(function () {
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
 		$(this).addClass('ots');
+		showSelectionMsg(thisDay, thisTime);
 		$('th[data-hour="' + thisTime + '"]').addClass('table-primary');
 		$('th[data-day="' + thisDay + '"]').addClass('ots');
 		$('th[data-day="' + thisDay + '"]').addClass('text-primary');
 	}).mouseleave(function () {
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
+		resetMouseMsg();
 		$(this).removeClass('ots');
 		$('th[data-hour="' + thisTime + '"]').removeClass('table-primary');
 		$('th[data-day="' + thisDay + '"]').removeClass('ots');
@@ -212,6 +353,12 @@ $().ready(function () {
 		if (dynamic['sel_start'] === false) {
 			$(this).addClass('sts');
 			dynamic['sel_start'] = [thisDay, thisTime];
+		} else if (dynamic['sel_start'][0] === thisDay && dynamic['sel_start'][1] === thisTime) {
+			// Commit a selection
+			setAvailability(thisDay, thisTime);
+			$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
+			// Close selection
+			dynamic['sel_start'] = false;
 		}
 	}).mouseup(function() {
 		let thisDay = parseInt($(this).attr('data-day'));
