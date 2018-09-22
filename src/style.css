@@ -22,8 +22,7 @@ body {
 	opacity: 0.3;
 }
 
-/* Over time slot */
-.ots {
+td:hover {
 	opacity: 0.5;
 }
 
