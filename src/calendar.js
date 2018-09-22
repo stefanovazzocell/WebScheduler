@@ -92,13 +92,13 @@ function isThisNow(day, time, delta = 0.5) {
 */
 function uiMessage() {
 	let messages = [
-		'👨‍💻 <code>(string-append "Hello" " " "World")</code>',
-		'👨‍💻 <code>System.out.println("Hello World");</code>',
-		'👨‍💻 <code>printf("Hello, World!");</code>',
+		'<code> 👨‍💻(string-append "Hello" " " "World")</code>',
+		'<code>👨‍💻 System.out.println("Hello World");</code>',
+		'<code>👨‍💻 printf("Hello, World!");</code>',
 		'<b>G. is watching you 🧔</b>',
 		'<b>Have a nice day! ⛅</b>',
 		'<b>Be awesome! ✨</b>',
-		'"<i>Trey, we have a problem.</i> 📧"',
+		'"<i>📧 Trey, we have a problem.</i>"',
 		'<b>Have lots of fun! 💻</b>',
 		'<b>Autograder is on fire 🔥</b>'
 	];
@@ -334,18 +334,14 @@ $().ready(function () {
 	$('td').mouseenter(function () {
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
-		$(this).addClass('ots');
 		showSelectionMsg(thisDay, thisTime);
 		$('th[data-hour="' + thisTime + '"]').addClass('table-primary');
-		$('th[data-day="' + thisDay + '"]').addClass('ots');
 		$('th[data-day="' + thisDay + '"]').addClass('text-primary');
 	}).mouseleave(function () {
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
 		resetMouseMsg();
-		$(this).removeClass('ots');
 		$('th[data-hour="' + thisTime + '"]').removeClass('table-primary');
-		$('th[data-day="' + thisDay + '"]').removeClass('ots');
 		$('th[data-day="' + thisDay + '"]').removeClass('text-primary');
 	}).mousedown(function() {
 		let thisDay = parseInt($(this).attr('data-day'));
