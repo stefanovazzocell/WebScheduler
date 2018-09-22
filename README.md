@@ -1,7 +1,7 @@
 # WebScheduler
 A web scheduler to aid the scheduling of TA hours
 
-Check out latest version at (https://stefanovazzocell.github.io/WebScheduler/src/)[https://stefanovazzocell.github.io/WebScheduler/src/]
+Check out latest version at [https://stefanovazzocell.github.io/WebScheduler/src/](https://stefanovazzocell.github.io/WebScheduler/src/)!
 
 ## Architecture
 
