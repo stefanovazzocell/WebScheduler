@@ -92,15 +92,17 @@ function isThisNow(day, time, delta = 0.5) {
 */
 function uiMessage() {
 	let messages = [
-		'<code> 👨‍💻(string-append "Hello" " " "World")</code>',
-		'<code>👨‍💻 System.out.println("Hello World");</code>',
-		'<code>👨‍💻 printf("Hello, World!");</code>',
-		'<b>G. is watching you 🧔</b>',
+		'<code>(string-append "Hello" "World")</code>',
+		'<code>System.out.println("Hello World");</code>',
+		'<code>printf("Hello, World");</code>',
+		'<b>G.exe 🧔</b>',
 		'<b>Have a nice day! ⛅</b>',
 		'<b>Be awesome! ✨</b>',
-		'"<i>📧 Trey, we have a problem.</i>"',
+		'<i>📧 Trey, we have a problem.</i>',
 		'<b>Have lots of fun! 💻</b>',
-		'<b>Autograder is on fire 🔥</b>'
+		'<b>Autograder is on fire 🔥</b>',
+		'<b>Follow the recipe 📖</b>',
+		'<b>Follow the recipe 📖</b>'
 	];
 	let message = messages[getRandom(0, messages.length -1)];
 	if (userSchedule.length == 0) {
@@ -219,6 +221,7 @@ function toggleTouch() {
 	$('.btn-group').toggleClass('btn-group-sm');
 	$('.btn').toggleClass('btn-sm');
 	$('input[type="button"]').toggleClass('btn-sm');
+	$('.btn-only-sm').addClass('btn-sm');
 	$('.input-group').toggleClass('input-group-sm');
 }
 
@@ -309,8 +312,56 @@ function deleteAccount() {
 	}
 }
 
+/*
+* handleMouseDown() - Handles a mouse down
+*/
+function handleMouseDown() {
+	let thisDay = parseInt($(this).attr('data-day'));
+	let thisTime = parseFloat($(this).attr('data-time'));
+	if (dynamic['sel_start'] === false) {
+		$(this).addClass('sts');
+		dynamic['sel_start'] = [thisDay, thisTime];
+	} else if (dynamic['sel_start'][0] === thisDay && dynamic['sel_start'][1] === thisTime) {
+		// Commit a selection
+		setAvailability(thisDay, thisTime);
+		$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
+		// Close selection
+		dynamic['sel_start'] = false;
+	}
+}
+
+/*
+* handleMouseUp() - Handles a mouse up
+*/
+function handleMouseUp() {
+	let thisDay = parseInt($(this).attr('data-day'));
+	let thisTime = parseFloat($(this).attr('data-time'));
+	if (dynamic['sel_start'][0] !== thisDay || dynamic['sel_start'][1] !== thisTime) {
+		if (dynamic['sel_start'] != false) {
+			// Commit a selection
+			let minDay = Math.min(dynamic['sel_start'][0], thisDay);
+			let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
+			let minTime = Math.min(dynamic['sel_start'][1], thisTime);
+			let maxTime = Math.max(dynamic['sel_start'][1], thisTime);
+			for (let day = minDay; day <= maxDay; day++) {
+				for (let time = minTime; time <= maxTime; time+=0.5) {
+					setAvailability(day, time);
+				}
+			}
+			$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
+			// Close selection
+			dynamic['sel_start'] = false;
+		}
+	}
+}
+
+function hasMouse() {
+	return !!('onmousemove' in window);
+}
+
 // Startup
 $().ready(function () {
+	alert('Has mouse? ' + hasMouse());
 	makeEmptyCalendar();
 
 	// Detect if touch enabled
@@ -331,7 +382,8 @@ $().ready(function () {
 	});
 
 	// Deal with click selection
-	$('td').mouseenter(function () {
+	$('td').mouseenter(function (e) {
+		console.log(e);
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
 		showSelectionMsg(thisDay, thisTime);
@@ -343,38 +395,5 @@ $().ready(function () {
 		resetMouseMsg();
 		$('th[data-hour="' + thisTime + '"]').removeClass('table-primary');
 		$('th[data-day="' + thisDay + '"]').removeClass('text-primary');
-	}).mousedown(function() {
-		let thisDay = parseInt($(this).attr('data-day'));
-		let thisTime = parseFloat($(this).attr('data-time'));
-		if (dynamic['sel_start'] === false) {
-			$(this).addClass('sts');
-			dynamic['sel_start'] = [thisDay, thisTime];
-		} else if (dynamic['sel_start'][0] === thisDay && dynamic['sel_start'][1] === thisTime) {
-			// Commit a selection
-			setAvailability(thisDay, thisTime);
-			$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
-			// Close selection
-			dynamic['sel_start'] = false;
-		}
-	}).mouseup(function() {
-		let thisDay = parseInt($(this).attr('data-day'));
-		let thisTime = parseFloat($(this).attr('data-time'));
-		if (dynamic['sel_start'][0] !== thisDay || dynamic['sel_start'][1] !== thisTime) {
-			if (dynamic['sel_start'] != false) {
-				// Commit a selection
-				let minDay = Math.min(dynamic['sel_start'][0], thisDay);
-				let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
-				let minTime = Math.min(dynamic['sel_start'][1], thisTime);
-				let maxTime = Math.max(dynamic['sel_start'][1], thisTime);
-				for (let day = minDay; day <= maxDay; day++) {
-					for (let time = minTime; time <= maxTime; time+=0.5) {
-						setAvailability(day, time);
-					}
-				}
-				$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
-				// Close selection
-				dynamic['sel_start'] = false;
-			}
-		}
-	});
+	}).mousedown(handleMouseDown).mouseup(handleMouseUp);
 });
