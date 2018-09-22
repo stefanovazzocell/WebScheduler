@@ -33,6 +33,7 @@ var userSchedule = [
 var dynamic = {
 	'tool': 1,
 	'mouseMsg': false,
+	'mouseMsgTimeout': false,
 	'sel_start': false,
 	'isTouch': false,
 	'authHash': window.location.hash.slice(1)
@@ -249,7 +250,9 @@ function resetPassword() {
 * @var message is message to show
 */
 function addMouseMsg(message) {
+	clearTimeout(dynamic['mouseMsgTimeout']);
 	dynamic['mouseMsg'] = message;
+	dynamic['mouseMsgTimeout'] = setTimeout(resetMouseMsg, 1500);
 }
 
 /*
@@ -355,13 +358,8 @@ function handleMouseUp() {
 	}
 }
 
-function hasMouse() {
-	return !!('onmousemove' in window);
-}
-
 // Startup
 $().ready(function () {
-	alert('Has mouse? ' + hasMouse());
 	makeEmptyCalendar();
 
 	// Detect if touch enabled
