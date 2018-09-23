@@ -400,34 +400,99 @@ function loadData(username = false, email = false, course = false, cal = false, 
 }
 
 /*
+* checkStatus(status) - checks the request status and takes actions accordingly
+* @var status the return status code for the request (or -1 for failed)
+* @return true if everything fine, false on abort
+*/
+function checkStatus(status) {
+	$('#alert-offline').hide();
+	switch (status) {
+		case 200:
+			$('#alert-loading').hide();
+			// All good
+			return true;
+		case 400:
+			$('#alert-error').html('😕 Something went wrong with your request. Please, try refreshing the page.').show();
+			return false;
+		case 401:
+			$('#alert-error').html('🔑 Your authentication code is expired. Please, try checking your emails again.').show();
+			return false;
+		case 500:
+			$('#alert-error').html('😞 Server error... Please, try again in a minute.').show();
+			return false;
+		case -1:
+			$('#alert-offline').show();
+			return false;
+		default:
+			$('#alert-error').html('🤔 Something went wrong with your request. Please, try again later.<br>(error code: ' + status + ')').show();
+			return false;
+	}
+}
+
+/*
 * push() - Pushes the current calendar to the server
 */
-
-// TODO
+function push() {
+	$.post('api/push/', { auth: account['authHash'] }, function(result, status){
+		if (checkStatus(status)) {
+			// TODO
+		}
+	}).fail(function () {
+		checkStatus(-1);
+	});
+}
 
 /*
 * pull() - Pulls the data from the server
 */
-
-// TODO
+function pull() {
+	$.post('api/pull/', { auth: account['authHash'] }, function(result, status){
+		if (checkStatus(status)) {
+			// TODO
+		}
+	}).fail(function () {
+		checkStatus(-1);
+	});
+}
 
 /*
 * update() - Updates the current user's account info
 */
-
-// TODO
+function update() {
+	$.post('api/update/', { auth: account['authHash'] }, function(result, status){
+		if (checkStatus(status)) {
+			// TODO
+		}
+	}).fail(function () {
+		checkStatus(-1);
+	});
+}
 
 /*
 * deleteme() - Deletes the user's account 
 */
-
-// TODO
+function deleteme() {
+	$.post('api/deleteme/', { auth: account['authHash'] }, function(result, status){
+		if (checkStatus(status)) {
+			// TODO
+		}
+	}).fail(function () {
+		checkStatus(-1);
+	});
+}
 
 /*
 * resetauth() - Resets the authentication hash
 */
-
-// TODO
+function resetauth() {
+	$.post('api/resetauth/', { auth: account['authHash'] }, function(result, status){
+		if (checkStatus(status)) {
+			// TODO
+		}
+	}).fail(function () {
+		checkStatus(-1);
+	});
+}
 
 // Startup
 $().ready(function () {
