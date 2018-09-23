@@ -32,9 +32,9 @@ var userSchedule = [
 		'title': 'MTG',
 		'type': 'Meeting',
 		'room': 'X800',
-		'day': 5,
-		'from': 14,
-		'to': 16
+		'day': 6,
+		'from': 20,
+		'to': 21
 	}
 ];
 
@@ -357,7 +357,7 @@ function yourNextClass() {
 				if (timeNow < from) {
 					thisDelta = timeNow - (from + delta);
 				}
-			} else if (smartDay - day < 2) {
+			} else if (smartDay - day < 3) {
 				thisDelta = (24 - from) + (smartDay - day - 1) + from;
 			}
 			if (isThisNow(day, from, delta)) {
@@ -392,46 +392,22 @@ function yourNextClass() {
 }
 
 /*
-* handleMouseDown() - Handles a mouse down
+* loadData(username, email, course, calendar, schedule) - loads the data in memory and on the UI
+* @var username (optional) - the username or false (don't change)
+* @var email (optional) - the email or false (don't change)
+* @var course (optional) - the course or false (don't change)
+* @var calendar (optional) - the calendar or false (don't change) or 0 to reset
+* @var schedule (optional) - the schedule or false (don't change)
 */
-function handleMouseDown() {
-	let thisDay = parseInt($(this).attr('data-day'));
-	let thisTime = parseFloat($(this).attr('data-time'));
-	if (dynamic['sel_start'] === false) {
-		$(this).addClass('sts');
-		dynamic['sel_start'] = [thisDay, thisTime];
-	} else if (dynamic['sel_start'][0] === thisDay && dynamic['sel_start'][1] === thisTime) {
-		// Commit a selection
-		setAvailability(thisDay, thisTime);
-		$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
-		// Close selection
-		dynamic['sel_start'] = false;
-	}
-}
+function loadData(username = false, email = false, course = false, calendar = false, schedule = false) {
+	if (username !== false) {
+		account['username'] = username;
 
-/*
-* handleMouseUp() - Handles a mouse up
-*/
-function handleMouseUp() {
-	let thisDay = parseInt($(this).attr('data-day'));
-	let thisTime = parseFloat($(this).attr('data-time'));
-	if (dynamic['sel_start'][0] !== thisDay || dynamic['sel_start'][1] !== thisTime) {
-		if (dynamic['sel_start'] != false) {
-			// Commit a selection
-			let minDay = Math.min(dynamic['sel_start'][0], thisDay);
-			let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
-			let minTime = Math.min(dynamic['sel_start'][1], thisTime);
-			let maxTime = Math.max(dynamic['sel_start'][1], thisTime);
-			for (let day = minDay; day <= maxDay; day++) {
-				for (let time = minTime; time <= maxTime; time+=0.5) {
-					setAvailability(day, time);
-				}
-			}
-			$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
-			// Close selection
-			dynamic['sel_start'] = false;
-		}
 	}
+	
+	//account['course']
+	//account['email']
+	//userSchedule
 }
 
 // Startup
@@ -469,5 +445,38 @@ $().ready(function () {
 		resetMouseMsg();
 		$('th[data-hour="' + thisTime + '"]').removeClass('table-primary');
 		$('th[data-day="' + thisDay + '"]').removeClass('text-primary');
-	}).mousedown(handleMouseDown).mouseup(handleMouseUp);
+	}).mousedown(function () {
+		let thisDay = parseInt($(this).attr('data-day'));
+		let thisTime = parseFloat($(this).attr('data-time'));
+		if (dynamic['sel_start'] === false) {
+			$(this).addClass('sts');
+			dynamic['sel_start'] = [thisDay, thisTime];
+		} else if (dynamic['sel_start'][0] === thisDay && dynamic['sel_start'][1] === thisTime) {
+			// Commit a selection
+			setAvailability(thisDay, thisTime);
+			$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
+			// Close selection
+			dynamic['sel_start'] = false;
+		}
+	}).mouseup(function() {
+		let thisDay = parseInt($(this).attr('data-day'));
+		let thisTime = parseFloat($(this).attr('data-time'));
+		if (dynamic['sel_start'][0] !== thisDay || dynamic['sel_start'][1] !== thisTime) {
+			if (dynamic['sel_start'] != false) {
+				// Commit a selection
+				let minDay = Math.min(dynamic['sel_start'][0], thisDay);
+				let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
+				let minTime = Math.min(dynamic['sel_start'][1], thisTime);
+				let maxTime = Math.max(dynamic['sel_start'][1], thisTime);
+				for (let day = minDay; day <= maxDay; day++) {
+					for (let time = minTime; time <= maxTime; time+=0.5) {
+						setAvailability(day, time);
+					}
+				}
+				$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
+				// Close selection
+				dynamic['sel_start'] = false;
+			}
+		}
+	});
 });
