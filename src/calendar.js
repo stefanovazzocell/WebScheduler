@@ -3,40 +3,7 @@
 var calendar = [];
 
 // Current schedule for this user
-var userSchedule = [
-	{
-		'title': 'L1E',
-		'type': 'Lab',
-		'room': 'X260',
-		'day': 2,
-		'from': 10.5,
-		'to': 12.5
-	},
-	{
-		'title': 'L1A',
-		'type': 'Lab',
-		'room': 'X250',
-		'day': 4,
-		'from': 9,
-		'to': 12
-	},
-	{
-		'title': 'MTG',
-		'type': 'Meeting',
-		'room': 'X800',
-		'day': 3,
-		'from': 17,
-		'to': 18
-	},
-	{
-		'title': 'MTG',
-		'type': 'Meeting',
-		'room': 'X800',
-		'day': 6,
-		'from': 20,
-		'to': 21
-	}
-];
+var userSchedule = [];
 
 var dynamic = {
 	'tool': 1,
@@ -396,23 +363,79 @@ function yourNextClass() {
 * @var username (optional) - the username or false (don't change)
 * @var email (optional) - the email or false (don't change)
 * @var course (optional) - the course or false (don't change)
-* @var calendar (optional) - the calendar or false (don't change) or 0 to reset
+* @var cal (optional) - the calendar or false (don't change) or 0 to reset
 * @var schedule (optional) - the schedule or false (don't change)
 */
-function loadData(username = false, email = false, course = false, calendar = false, schedule = false) {
+function loadData(username = false, email = false, course = false, cal = false, schedule = false) {
+	let redraw = false;
 	if (username !== false) {
 		account['username'] = username;
-
+		$('#name').val(username);
+		$('.name').html(username);
 	}
-	
-	//account['course']
-	//account['email']
-	//userSchedule
+	if (email !== false) {
+		account['email'] = email;
+		$('#email').val(email);
+	}
+	if (course !== false) {
+		account['course'] = course;
+	}
+	if (calendar === true) {
+		makeEmptyCalendar();
+		redraw = true;
+	} else if (cal !== false) {
+		calendar = cal;
+		redraw = true;
+	}
+	if (schedule !== false) {
+		userSchedule = schedule;
+		redraw = true;
+		// Give the browser a break
+		setTimeout(yourNextClass, 250);
+	}
+	if (redraw) {
+		// Give the browser a break
+		setTimeout(drawCalendar, 150);
+	}
 }
 
 // Startup
 $().ready(function () {
-	makeEmptyCalendar();
+	// === TESTING ===
+	let test_schedule = [{
+			'title': 'L1E',
+			'type': 'Lab',
+			'room': 'X260',
+			'day': 2,
+			'from': 10.5,
+			'to': 12.5
+		},
+		{
+			'title': 'L1A',
+			'type': 'Lab',
+			'room': 'X250',
+			'day': 4,
+			'from': 9,
+			'to': 12
+		},
+		{
+			'title': 'MTG',
+			'type': 'Meeting',
+			'room': 'X800',
+			'day': 3,
+			'from': 17,
+			'to': 18
+		},
+		{
+			'title': 'MTG',
+			'type': 'Meeting',
+			'room': 'X800',
+			'day': 6,
+			'from': 20,
+			'to': 21
+		}];
+	loadData('Ta', 'ta@localhost', 'CPSC110', true, test_schedule);
+	// ===============
 
 	// Detect if touch enabled
 	dynamic['isTouch'] = (('ontouchstart' in window) || (window.DocumentTouch && document instanceof DocumentTouch));
@@ -420,9 +443,7 @@ $().ready(function () {
 		toggleTouch();
 	}	
 
-	uiMessage();
-	yourNextClass();
-	drawCalendar();
+	setTimeout(uiMessage, 400);
 
 	// Mouse Message
 	$(document).mousemove(function(e){
