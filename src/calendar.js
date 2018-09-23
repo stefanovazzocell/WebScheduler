@@ -149,6 +149,7 @@ function drawCalendar() {
 		outputHtml += '</tr>';
 	}
 	$('#calendar').html(outputHtml);
+	setEventListeners();
 	$('#alert-loading').hide();
 }
 
@@ -446,6 +447,58 @@ function checkStatus(status) {
 }
 
 /*
+* setEventListeners() - sets event listeners
+*/
+function setEventListeners() {
+	$('td').off().mouseenter(function (e) {
+		let thisDay = parseInt($(this).attr('data-day'));
+		let thisTime = parseFloat($(this).attr('data-time'));
+		showSelectionMsg(thisDay, thisTime);
+		$('th[data-hour="' + thisTime + '"]').addClass('table-primary');
+		$('th[data-day="' + thisDay + '"]').addClass('text-primary');
+	}).mouseleave(function () {
+		let thisDay = parseInt($(this).attr('data-day'));
+		let thisTime = parseFloat($(this).attr('data-time'));
+		resetMouseMsg();
+		$('th[data-hour="' + thisTime + '"]').removeClass('table-primary');
+		$('th[data-day="' + thisDay + '"]').removeClass('text-primary');
+	}).mousedown(function () {
+		let thisDay = parseInt($(this).attr('data-day'));
+		let thisTime = parseFloat($(this).attr('data-time'));
+		if (dynamic['sel_start'] === false) {
+			$(this).addClass('sts');
+			dynamic['sel_start'] = [thisDay, thisTime];
+		} else if (dynamic['sel_start'][0] === thisDay && dynamic['sel_start'][1] === thisTime) {
+			// Commit a selection
+			setAvailability(thisDay, thisTime);
+			$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
+			// Close selection
+			dynamic['sel_start'] = false;
+		}
+	}).mouseup(function() {
+		let thisDay = parseInt($(this).attr('data-day'));
+		let thisTime = parseFloat($(this).attr('data-time'));
+		if (dynamic['sel_start'][0] !== thisDay || dynamic['sel_start'][1] !== thisTime) {
+			if (dynamic['sel_start'] != false) {
+				// Commit a selection
+				let minDay = Math.min(dynamic['sel_start'][0], thisDay);
+				let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
+				let minTime = Math.min(dynamic['sel_start'][1], thisTime);
+				let maxTime = Math.max(dynamic['sel_start'][1], thisTime);
+				for (let day = minDay; day <= maxDay; day++) {
+					for (let time = minTime; time <= maxTime; time+=0.5) {
+						setAvailability(day, time);
+					}
+				}
+				$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
+				// Close selection
+				dynamic['sel_start'] = false;
+			}
+		}
+	});
+}
+
+/*
 * setupRefresh() - refreshes UI elements and keeps data updated (note: call only once)
 */
 function setupRefresh() {
@@ -585,54 +638,6 @@ $().ready(function () {
 		if (dynamic['mouseMsg']) {
 			var cpos = { top: e.pageY + 10, left: e.pageX + 10 };
 			$('#mouseMsg').offset(cpos).html(dynamic['mouseMsg']);
-		}
-	});
-
-	// Deal with click selection
-	$('td').mouseenter(function (e) {
-		let thisDay = parseInt($(this).attr('data-day'));
-		let thisTime = parseFloat($(this).attr('data-time'));
-		showSelectionMsg(thisDay, thisTime);
-		$('th[data-hour="' + thisTime + '"]').addClass('table-primary');
-		$('th[data-day="' + thisDay + '"]').addClass('text-primary');
-	}).mouseleave(function () {
-		let thisDay = parseInt($(this).attr('data-day'));
-		let thisTime = parseFloat($(this).attr('data-time'));
-		resetMouseMsg();
-		$('th[data-hour="' + thisTime + '"]').removeClass('table-primary');
-		$('th[data-day="' + thisDay + '"]').removeClass('text-primary');
-	}).mousedown(function () {
-		let thisDay = parseInt($(this).attr('data-day'));
-		let thisTime = parseFloat($(this).attr('data-time'));
-		if (dynamic['sel_start'] === false) {
-			$(this).addClass('sts');
-			dynamic['sel_start'] = [thisDay, thisTime];
-		} else if (dynamic['sel_start'][0] === thisDay && dynamic['sel_start'][1] === thisTime) {
-			// Commit a selection
-			setAvailability(thisDay, thisTime);
-			$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
-			// Close selection
-			dynamic['sel_start'] = false;
-		}
-	}).mouseup(function() {
-		let thisDay = parseInt($(this).attr('data-day'));
-		let thisTime = parseFloat($(this).attr('data-time'));
-		if (dynamic['sel_start'][0] !== thisDay || dynamic['sel_start'][1] !== thisTime) {
-			if (dynamic['sel_start'] != false) {
-				// Commit a selection
-				let minDay = Math.min(dynamic['sel_start'][0], thisDay);
-				let maxDay = Math.max(dynamic['sel_start'][0], thisDay);
-				let minTime = Math.min(dynamic['sel_start'][1], thisTime);
-				let maxTime = Math.max(dynamic['sel_start'][1], thisTime);
-				for (let day = minDay; day <= maxDay; day++) {
-					for (let time = minTime; time <= maxTime; time+=0.5) {
-						setAvailability(day, time);
-					}
-				}
-				$('[data-day="' + dynamic['sel_start'][0] + '"][data-time="' + dynamic['sel_start'][1] + '"]').removeClass('sts');
-				// Close selection
-				dynamic['sel_start'] = false;
-			}
 		}
 	});
 });
