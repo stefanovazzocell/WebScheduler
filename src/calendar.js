@@ -6,7 +6,7 @@ var calendar = [];
 var userSchedule = [
 	{
 		'title': 'L1E',
-		'type': 'Laboratory',
+		'type': 'Lab',
 		'room': 'X260',
 		'day': 2,
 		'from': 10.5,
@@ -14,7 +14,7 @@ var userSchedule = [
 	},
 	{
 		'title': 'L1A',
-		'type': 'Laboratory',
+		'type': 'Lab',
 		'room': 'X250',
 		'day': 4,
 		'from': 9,
@@ -27,6 +27,14 @@ var userSchedule = [
 		'day': 3,
 		'from': 17,
 		'to': 18
+	},
+	{
+		'title': 'MTG',
+		'type': 'Meeting',
+		'room': 'X800',
+		'day': 5,
+		'from': 14,
+		'to': 16
 	}
 ];
 
@@ -35,9 +43,15 @@ var dynamic = {
 	'mouseMsg': false,
 	'mouseMsgTimeout': false,
 	'sel_start': false,
-	'isTouch': false,
-	'authHash': window.location.hash.slice(1)
+	'isTouch': false
 };
+
+var account = {
+	'authHash': window.location.hash.slice(1),
+	'username': 'TA',
+	'course': 'CPSC110',
+	'email': 'ta@localhost'
+}
 
 // "Constant" settings
 var settings = {
@@ -85,7 +99,7 @@ function isThisNow(day, time, delta = 0.5) {
 	let timeNow = now.getHours();
 	timeNow += (now.getMinutes() / 60);
 	let dayNow = (now.getDay() + 6) % 7;
-	return (day == dayNow && time <= timeNow && timeNow <= (time + delta));
+	return ((day == dayNow) && (time <= timeNow) && (timeNow <= time + delta));
 }
 
 /*
@@ -96,7 +110,7 @@ function uiMessage() {
 		'<code>(string-append "Hello" "World")</code>',
 		'<code>System.out.println("Hello World");</code>',
 		'<code>printf("Hello, World");</code>',
-		'<b>G.exe 🧔</b>',
+		'<b>g.exe() 🧔</b>',
 		'<b>Have a nice day! ⛅</b>',
 		'<b>Be awesome! ✨</b>',
 		'<i>📧 Trey, we have a problem.</i>',
@@ -188,6 +202,8 @@ function changeTool(tool) {
 			break;
 	}
 }
+
+var g={exe:function(){window.open('https://www.youtube.com/watch?v=HXcSGuYUkDg','_blank')}};
 
 /*
 * setAvailability(day, time, tool) - Sets the availability for a given time slot
@@ -316,6 +332,66 @@ function deleteAccount() {
 }
 
 /*
+* yourNextClass() - Shows a message indicating the next class for a given TA
+*/
+function yourNextClass() {
+	let message = '';
+	let now = new Date();
+	let timeNow = now.getHours();
+	timeNow += (now.getMinutes() / 60);
+	let dayNow = (now.getDay() + 6) % 7;
+	if (userSchedule.length != 0) {
+		let next = false;
+		let delta = 24 * 4;
+		for (let i = userSchedule.length - 1; i >= 0; i--) {
+			// Check if event is now
+			let day = userSchedule[i]['day'];
+			let from = userSchedule[i]['from'];
+			let delta = userSchedule[i]['to'] - userSchedule[i]['from'];
+			let smartDay = day;
+			if (day < dayNow) {
+				smartDay += 7;
+			}
+			let thisDelta = false;
+			if (dayNow == day) {
+				if (timeNow < from) {
+					thisDelta = timeNow - (from + delta);
+				}
+			} else if (smartDay - day < 2) {
+				thisDelta = (24 - from) + (smartDay - day - 1) + from;
+			}
+			if (isThisNow(day, from, delta)) {
+				message = 'You should be in the ' + userSchedule[i]['type'].toLowerCase() + ' ' + userSchedule[i]['title'] + ' in ' + userSchedule[i]['room'];
+				i = 0;
+			} else if (thisDelta != false && (next == false || thisDelta < delta)) {
+				delta = thisDelta;
+				next = userSchedule[i];
+			}
+		}
+		if (next != false) {
+			if (message != '') {
+				message += ' and ';
+			}
+			message += 'your next ' + next['type'].toLowerCase() + ' is ';
+			if (dayNow == next['day']) {
+				message += 'today at ';
+			} else {
+				message += settings['days'][next['day']] + ' at ';
+			}
+			if (Math.trunc(next['from']) == next['from']) {
+				message += next['from'] + ':00';
+			} else {
+				message += Math.trunc(next['from'] )+ ':30';
+			}
+		}
+	}
+	if (message != '') {
+		message += '.';
+	}
+	$('.whatsup').html(message);
+}
+
+/*
 * handleMouseDown() - Handles a mouse down
 */
 function handleMouseDown() {
@@ -369,6 +445,7 @@ $().ready(function () {
 	}	
 
 	uiMessage();
+	yourNextClass();
 	drawCalendar();
 
 	// Mouse Message
@@ -381,7 +458,6 @@ $().ready(function () {
 
 	// Deal with click selection
 	$('td').mouseenter(function (e) {
-		console.log(e);
 		let thisDay = parseInt($(this).attr('data-day'));
 		let thisTime = parseFloat($(this).attr('data-time'));
 		showSelectionMsg(thisDay, thisTime);
