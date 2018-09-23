@@ -56,16 +56,25 @@ function calendarAt(day, time, value = undefined, updateUI = false) {
 }
 
 /*
-* isThisNow(day, time) - checks if the given day + time is now
+* isThisNow(day, time, delta, updateUI) - checks if the given day + time is now
 * @var day is the day of the week from 0 to 6 (0 is monday)
 * @var time is the from time (hour + 0.5 if 30)
 * @var delta (optional) is used to calculate the timeframe (0.5 = 30 minutes)
+* @var updateUI (optional) if true it updates the UI to highlight the current day
 */
-function isThisNow(day, time, delta = 0.5) {
+function isThisNow(day, time, delta = 0.5, updateUI = false) {
 	let now = new Date();
 	let timeNow = now.getHours();
-	timeNow += (now.getMinutes() / 60);
 	let dayNow = (now.getDay() + 6) % 7;
+	if (updateUI) {
+		let targetTime = timeNow;
+		if (now.getMinutes() >= 30) {
+			targetTime += 0.5;
+		}
+		$('.now').removeClass('now');
+		$('td[data-day="' + dayNow + '"][data-time="' + targetTime + '"]').addClass('now');
+	}
+	timeNow += (now.getMinutes() / 60);
 	return ((day == dayNow) && (time <= timeNow) && (timeNow <= time + delta));
 }
 
@@ -449,6 +458,11 @@ function setupRefresh() {
 		// Updates the next lab message
 		yourNextClass();
 	}, 5 * 60 * 1000);
+	// Every 1 minute
+	setInterval(function () {
+		// Update the selection for current time slot
+		isThisNow(0,0,0,true);
+	}, 60 * 1000);
 }
 
 /*
