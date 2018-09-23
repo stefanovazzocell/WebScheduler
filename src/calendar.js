@@ -399,6 +399,36 @@ function loadData(username = false, email = false, course = false, cal = false, 
 	}
 }
 
+/*
+* push() - Pushes the current calendar to the server
+*/
+
+// TODO
+
+/*
+* pull() - Pulls the data from the server
+*/
+
+// TODO
+
+/*
+* update() - Updates the current user's account info
+*/
+
+// TODO
+
+/*
+* deleteme() - Deletes the user's account 
+*/
+
+// TODO
+
+/*
+* resetauth() - Resets the authentication hash
+*/
+
+// TODO
+
 // Startup
 $().ready(function () {
 	// === TESTING ===
