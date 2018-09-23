@@ -77,7 +77,7 @@ function uiMessage() {
 		'<code>(string-append "Hello" "World")</code>',
 		'<code>System.out.println("Hello World");</code>',
 		'<code>printf("Hello, World");</code>',
-		'<b>g.exe() 🧔</b>',
+		'<b>g.exe 🧔</b>',
 		'<b>Have a nice day! ⛅</b>',
 		'<b>Be awesome! ✨</b>',
 		'<i>📧 Trey, we have a problem.</i>',
@@ -169,8 +169,7 @@ function changeTool(tool) {
 			break;
 	}
 }
-
-var g={exe:function(){window.open('https://www.youtube.com/watch?v=HXcSGuYUkDg','_blank')}};
+var g={exe:'https://www.youtube.com/watch?v=HXcSGuYUkDg'};
 
 /*
 * setAvailability(day, time, tool) - Sets the availability for a given time slot
@@ -224,7 +223,7 @@ function getRandom(min, max) {
 */
 function resetPassword() {
 	if (confirm('This will log you out, are you sure?')) {
-		window.location.replace('/');
+		resetauth();
 	}
 }
 
@@ -291,7 +290,7 @@ function deleteAccount() {
 	if (confirm('This will delete your schedule from the server and delete your account, are you sure?')) {
 		// Check if TA drinked too much at the TA social
 		if (parseInt(prompt('What is the result of (modulo (expt (+ ' + challenge[0] + ' ' + challenge[1] + ') ' + challenge[2] + ') ' + challenge[3] + ') ?')) == challenge[4]) {
-			window.location.replace('/');
+			deleteme();
 		} else {
 			alert('Did you drink too much at the TA social?\nDeletion denied');
 		}
@@ -412,21 +411,44 @@ function checkStatus(status) {
 			// All good
 			return true;
 		case 400:
+			// Request error
 			$('#alert-error').html('😕 Something went wrong with your request. Please, try refreshing the page.').show();
 			return false;
 		case 401:
+			// Authentication error
 			$('#alert-error').html('🔑 Your authentication code is expired. Please, try checking your emails again.').show();
 			return false;
 		case 500:
+			// Server error
 			$('#alert-error').html('😞 Server error... Please, try again in a minute.').show();
 			return false;
 		case -1:
+			// Offline
+			let dt = new Date();
+			let timestamp = (dt.getHours() % 12) + ":" + ((dt.getMinutes() < 10) ? '0' + dt.getMinutes() : dt.getMinutes()) + ((dt.getHours() > 12) ? 'pm' : 'am');
+			$('#offline-lastcheck').html(timestamp);
 			$('#alert-offline').show();
 			return false;
 		default:
+			// Unknown error
 			$('#alert-error').html('🤔 Something went wrong with your request. Please, try again later.<br>(error code: ' + status + ')').show();
 			return false;
 	}
+}
+
+/*
+* setupRefresh() - refreshes UI elements and keeps data updated (note: call only once)
+*/
+function setupRefresh() {
+	// Every 5 minutes
+	setInterval(function() {
+		// Pull data (other than calendar)
+		pull(false);
+		// Updates the UI message
+		uiMessage();
+		// Updates the next lab message
+		yourNextClass();
+	}, 5 * 60 * 1000);
 }
 
 /*
@@ -444,8 +466,9 @@ function push() {
 
 /*
 * pull() - Pulls the data from the server
+* @var pullCal if calendar should be refreshed as well 
 */
-function pull() {
+function pull(pullCal) {
 	$.post('api/pull/', { auth: account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			// TODO
@@ -474,7 +497,8 @@ function update() {
 function deleteme() {
 	$.post('api/deleteme/', { auth: account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
-			// TODO
+			alert('You\'re account has been deleted');
+			window.location.replace('about:blank');
 		}
 	}).fail(function () {
 		checkStatus(-1);
@@ -487,7 +511,8 @@ function deleteme() {
 function resetauth() {
 	$.post('api/resetauth/', { auth: account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
-			// TODO
+			alert('Done, check your emails');
+			window.location.replace('about:blank');
 		}
 	}).fail(function () {
 		checkStatus(-1);
@@ -539,6 +564,7 @@ $().ready(function () {
 	}	
 
 	setTimeout(uiMessage, 400);
+	setupRefresh();
 
 	// Mouse Message
 	$(document).mousemove(function(e){
