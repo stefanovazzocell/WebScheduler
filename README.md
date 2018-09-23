@@ -43,12 +43,10 @@ URL: `\api\ta\{action}\`
 
 TYPE: `POST`
 
-DATA: `{"auth_hash": "...", ...}`
+DATA: `{"auth": "{authentication hash}", ...}`
 
 RESPONSE TYPE: `json`
 
-RESPONSES `{"Status": "{status code}"}`
- 
 | RESPONSE CODE | Meaning |
 | ------------: | ------- |
 |           200 | OK |
