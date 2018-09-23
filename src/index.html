@@ -44,6 +44,13 @@
 					</div>
 					<hr>
 					<div class="modal-body">
+						<p class="text-danger">UI Settings</p>
+						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+							<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
+						</div>
+					</div>
+					<hr>
+					<div class="modal-body">
 						<p class="text-danger">Danger Zone!</p>
 						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
 							<button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
@@ -75,9 +82,6 @@
 			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
 				<button type="button" class="btn btn-sm btn-light" onclick="pull(confirm('This will overwrite your local changes'));">Pull Schedule</button>
 				<button type="button" class="btn btn-sm btn-dark" onclick="push();">Push Schedule</button>
-			</div>
-			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
-				<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
 			</div><br><br>
 			<div class="btn-group btn-group-sm" id="tool" role="group" aria-label="Tool">
 				<button type="button" onclick="changeTool(0);" class="btn btn-sm btn-success">Available</button>
