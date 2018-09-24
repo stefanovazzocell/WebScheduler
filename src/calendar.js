@@ -48,6 +48,9 @@ function calendarAt(day, time, value = undefined, updateUI = false) {
 	if (value === undefined) {
 		return calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day];
 	} else {
+		console.log((time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day);
+		console.log(calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day]);
+		console.log(value);
 		calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day] = value;
 		if (updateUI) {
 			setAvailability(day, time, value);
@@ -389,7 +392,8 @@ function loadData(username = false, email = false, course = false, cal = false, 
 	if (course !== false) {
 		account['course'] = course;
 	}
-	if (calendar === true) {
+	if (cal === 0) {
+		console.log('ok');
 		makeEmptyCalendar();
 		redraw = true;
 	} else if (cal !== false) {
@@ -621,7 +625,7 @@ $().ready(function () {
 			'from': 20,
 			'to': 21
 		}];
-	loadData('Ta', 'ta@localhost', 'CPSC110', true, test_schedule);
+	loadData('Ta', 'ta@localhost', 'CPSC110', 0, test_schedule);
 	// ===============
 
 	// Detect if touch enabled
