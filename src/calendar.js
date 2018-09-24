@@ -9,7 +9,8 @@ var dynamic = {
 	'mouseMsgTimeout': false,
 	'sel_start': false,
 	'isTouch': false,
-	'hasLocalStorage': (typeof(Storage) !== "undefined")
+	'hasLocalStorage': (typeof(Storage) !== "undefined"),
+	'bigIcons': false
 };
 
 var account = {
@@ -23,6 +24,30 @@ var account = {
 var settings = {
 	'days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
 	'fromto': [8, 21]
+}
+
+/*
+* commitToLS(reverse) - commits calendar and env to local storage, autosets itself to commit every 30 seconds
+* @val reverse (optional) if true updates calendar and env from local storage
+*/
+function commitToLS(reverse = false) {
+	if (reverse === true) {
+		// Get
+		if (dynamic['hasLocalStorage'] && localStorage.getItem('calendar') !== null) {
+			tmp_calendar = JSON.parse(localStorage.getItem('calendar'));
+			let bigIcons = (dynamic['bigIcons'] ? 'true' : 'false');
+			if (localStorage.getItem('bigIcons') != bigIcons) {
+				toggleTouch();
+			}
+		}
+	} else {
+		// Commit
+		if (dynamic['hasLocalStorage']) {
+			localStorage.setItem('bigIcons', dynamic['bigIcons']);
+			localStorage.setItem('calendar', JSON.stringify(tmp_calendar));
+			setTimeout(commitToLS, 30 * 1000);
+		}
+	}
 }
 
 /*
@@ -279,6 +304,7 @@ function setAvailability(day, time, tool = dynamic['tool']) {
 * toggleTouch() - Toggles touch mode on and off
 */
 function toggleTouch() {
+	dynamic['bigIcons'] = !dynamic['bigIcons'];
 	// Resize elements
 	$('table').toggleClass('table-sm');
 	$('.btn-group').toggleClass('btn-group-sm');
@@ -464,8 +490,13 @@ function loadData(username = false, email = false, course = false, cal = false, 
 		makeEmptyCalendar();
 		redraw = true;
 	} else if (cal !== false) {
+		let isFirst = (calendar(-1) === []);
 		calendar(-1, cal);
 		redraw = true;
+		if (isFirst) {
+			commitToLS(true);
+			commitToLS();
+		}
 	}
 	if (sched !== false) {
 		schedule(-1, sched);
@@ -699,7 +730,7 @@ $().ready(function () {
 	dynamic['isTouch'] = (('ontouchstart' in window) || (window.DocumentTouch && document instanceof DocumentTouch));
 	if (dynamic['isTouch']) {
 		toggleTouch();
-	}	
+	}
 
 	setTimeout(uiMessage, 400);
 	setupRefresh();
