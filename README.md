@@ -46,11 +46,12 @@ URL: `\api\ta\{action}\`
 
 | ACTION | Meaning | Extra DATA | Response |
 | ------ | ------- | ---------- | -------- |
-| pull   | Get data |   | `{"username": "{username}", "email": "{email}", "course": "{course}", "calendar": [{calendar}], "schedule": {{schedule}}]` |
+| pull   | Get data |   | `{"username": "{username}", "email": "{email}", "course": "{course}", "privacy": {privacy}, "calendar": [{calendar}], "schedule": {{schedule}}]` |
 | push   | Get data | `"calendar": [{calendar}]` |   |
-| update | Updates the user info | `{"username": "{username}", "email": "{email}"`  |   |
+| update | Updates the user info | `{"username": "{username}", "email": "{email}", "privacy": {privacy}`  |   |
 | deleteme | Deletes the current ta from the system |   |   |
 | resetauth | Resets the auth hash for the ta, a new one will be sent via email |   |   |
+| getsubs | Gets all the subs for all courses (where this ta is registered in) |   | `{{subs*}}` |
 
 TYPE: `POST`
 
@@ -65,10 +66,35 @@ RESPONSE TYPE: `json`
 |           401 | Wrong auth hash |
 |           500 | Server error |
 
+
+**`{subs*}`**
+
+Here's an example
+
+```json
+{
+	"L1Ex": {
+		"Available": [
+			"Stefano Vazzoler"
+		],
+		"Prefer Not": [
+			"Ruiyu Gou"
+		]
+	},
+	"102": {
+		"Available": [
+			"Qianqian Feng"
+		],
+		"Prefer Not": [
+			"Julian Mentasti",
+			"Doru Kesriyeli"
+		]
+	}
+}
+```
+
 ### Coordinator/Admin
 
 
 
 ### Extra
-
-
