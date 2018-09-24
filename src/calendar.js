@@ -29,25 +29,29 @@ var settings = {
 }
 
 /*
-* commitToLS(reverse) - commits calendar and env to local storage, autosets itself to commit every 30 seconds
-* @val reverse (optional) if true updates calendar and env from local storage
+* commitToLS(caldr, settng) - commits calendar and env to local storage, autosets itself to commit every 30 seconds
+* @val caldr (optional) 0 do nothing, -1 retrive, 1 save calendar
+* @val settng (optional) 0 do nothing, -1 retrive, 1 save settings
 */
-function commitToLS(reverse = false) {
-	if (reverse === true) {
-		// Get
-		if (dynamic['hasLocalStorage'] && localStorage.getItem('calendar') !== null) {
+function commitToLS(caldr = 0, settng = 0) {
+	if (dynamic['hasLocalStorage']) {
+		// Calendar
+		if (caldr === -1 && localStorage.getItem('calendar') != null) {
+			// Retrive
 			tmp_calendar = JSON.parse(localStorage.getItem('calendar'));
-			let bigIcons = (dynamic['bigIcons'] ? 'true' : 'false');
-			if (localStorage.getItem('bigIcons') != bigIcons) {
+		} else if (caldr === 1) {
+			// Save
+			localStorage.setItem('calendar', JSON.stringify(tmp_calendar));
+		}
+		// Settings
+		if (settng === -1 && localStorage.getItem('bigIcons') != null) {
+			// Retrive
+			if (localStorage.getItem('bigIcons') !== (dynamic['bigIcons'] ? 'true' : 'false')) {
 				toggleTouch();
 			}
-		}
-	} else {
-		// Commit
-		if (dynamic['hasLocalStorage']) {
-			localStorage.setItem('bigIcons', dynamic['bigIcons']);
-			localStorage.setItem('calendar', JSON.stringify(tmp_calendar));
-			setTimeout(commitToLS, 30 * 1000);
+		} else if (settng === 1) {
+			// Save
+			localStorage.setItem('bigIcons', JSON.stringify(dynamic['bigIcons']));
 		}
 	}
 }
@@ -223,7 +227,19 @@ function drawCalendar() {
 			if (isThisNow(day, time)) {
 				isNowClass = ' now';
 			}
-			outputHtml += '<td class="table-success' + isNowClass + '" data-day="' + day + '" data-time="' + time + '">' + message + '</td>';
+			let ctype = ''
+			switch (calendar(((time - settings['fromto'][0]) * 2) + (day * (settings['fromto'][1] - settings['fromto'][0]) * 2))) {
+				case 0:
+					ctype = 'success';
+					break;
+				case 1:
+					ctype = 'warning';
+					break;
+				case 2:
+					ctype = 'danger';
+					break;
+			}
+			outputHtml += '<td class="table-' + ctype + isNowClass + '" data-day="' + day + '" data-time="' + time + '">' + message + '</td>';
 		}
 		outputHtml += '</tr>';
 	}
@@ -323,6 +339,7 @@ function getSubs() {
 */
 function toggleTouch() {
 	dynamic['bigIcons'] = !dynamic['bigIcons'];
+	commitToLS(0,1);
 	// Resize elements
 	$('table').toggleClass('table-sm');
 	$('.btn-group').toggleClass('btn-group-sm');
@@ -511,15 +528,22 @@ function loadData(username = false, email = false, course = false, privacy = fal
 		$('#privacy').val(privacy);
 	}
 	if (cal === 0) {
+		let isFirst = (calendar(-1).length === [].length);
 		makeEmptyCalendar();
 		redraw = true;
+		if (isFirst) {
+			commitToLS(-1);
+		} else {
+			commitToLS(1);
+		}
 	} else if (cal !== false) {
 		let isFirst = (calendar(-1) === []);
 		calendar(-1, cal);
 		redraw = true;
 		if (isFirst) {
-			commitToLS(true);
-			commitToLS();
+			commitToLS(-1);
+		} else {
+			commitToLS(1);
 		}
 	}
 	if (sched !== false) {
@@ -628,6 +652,7 @@ function setEventListeners() {
 * setupRefresh() - refreshes UI elements and keeps data updated (note: call only once)
 */
 function setupRefresh() {
+	commitToLS(0,-1);
 	// Every 5 minutes
 	setInterval(function() {
 		// Pull data (other than calendar)
@@ -638,11 +663,13 @@ function setupRefresh() {
 		// Updates the next lab message
 		yourNextClass();
 	}, 5 * 60 * 1000);
-	// Every 1 minute
+	// Every 30 seconds
 	setInterval(function () {
 		// Update the selection for current time slot
 		isThisNow(0,0,0,true);
-	}, 60 * 1000);
+		// Commit to LS
+		commitToLS(1);
+	}, 30 * 1000);
 }
 
 /*
