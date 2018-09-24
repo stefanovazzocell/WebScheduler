@@ -467,7 +467,6 @@ function yourNextClass() {
 			} else if ((smartDay - dayNow) < 5) {
 				thisDelta = from + (smartDay - dayNow) * 24;
 			}
-			console.log(userSchedule[i]['title'] + '\'s thisDelta=' + thisDelta + ' and delta=' + delta);
 			if (isThisNow(day, from, delta)) {
 				message = 'You should be in the ' + userSchedule[i]['type'].toLowerCase() + ' ' + userSchedule[i]['title'] + ' in ' + userSchedule[i]['room'];
 				i = 0;
