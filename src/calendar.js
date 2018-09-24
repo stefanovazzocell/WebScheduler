@@ -35,18 +35,28 @@ function schedule(at = -1, value = null) {
 	if (value === null) {
 		if (at === -1) {
 			// Return all
-			return tmp_userSchedule;
+			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('schedule')) : tmp_userSchedule);
 		} else {
 			// Return index
-			return tmp_userSchedule[at];
+			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('schedule')) : tmp_userSchedule)[at];
 		}
 	} else {
 		if (at === -1) {
-			// Overwrites the calendar
-			tmp_userSchedule = value;
+			// Overwrites the schedule
+			if (dynamic['hasLocalStorage']) {
+				localStorage.setItem('schedule', JSON.stringify(value));
+			} else {
+				tmp_userSchedule = value;
+			}
 		} else {
 			// Sets the value at index
-			tmp_userSchedule[at] = value;
+			if (dynamic['hasLocalStorage']) {
+				let tmp = JSON.parse(localStorage.getItem('schedule'));
+				tmp[at] = value;
+				localStorage.setItem('schedule', JSON.stringify(tmp));
+			} else {
+				tmp_userSchedule[at] = value;
+			}
 		}
 	}
 }
@@ -61,18 +71,28 @@ function calendar(at = -1, value = null) {
 	if (value === null) {
 		if (at === -1) {
 			// Return all
-			return tmp_calendar;
+			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('calendar')) : tmp_calendar);
 		} else {
 			// Return index
-			return tmp_calendar[at];
+			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('calendar')) : tmp_calendar)[at];
 		}
 	} else {
 		if (at === -1) {
 			// Overwrites the calendar
-			tmp_calendar = value;
+			if (dynamic['hasLocalStorage']) {
+				localStorage.setItem('calendar', JSON.stringify(value));
+			} else {
+				tmp_calendar = value;
+			}
 		} else {
 			// Sets the value at index
-			tmp_calendar[at] = value;
+			if (dynamic['hasLocalStorage']) {
+				let tmp = JSON.parse(localStorage.getItem('calendar'));
+				tmp[at] = value;
+				localStorage.setItem('calendar', JSON.stringify(tmp));
+			} else {
+				tmp_calendar[at] = value;
+			}
 		}
 	}
 }
