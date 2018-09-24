@@ -787,7 +787,7 @@ $().ready(function () {
 			]
 		}
 	}
-	//setupSubs();
+	setupSubs();
 	loadData('Ta', 'ta@localhost', 'CPSC110', 1, 0, test_schedule);
 	// ===============
 
