@@ -455,23 +455,23 @@ function yourNextClass() {
 			// Check if event is now
 			let day = userSchedule[i]['day'];
 			let from = userSchedule[i]['from'];
-			let delta = userSchedule[i]['to'] - userSchedule[i]['from'];
 			let smartDay = day;
 			if (day < dayNow) {
 				smartDay += 7;
 			}
 			let thisDelta = false;
-			if (dayNow == day) {
+			if (smartDay == dayNow) {
 				if (timeNow < from) {
-					thisDelta = timeNow - (from + delta);
+					thisDelta = timeNow - from;
 				}
-			} else if (smartDay - day < 3) {
-				thisDelta = (24 - from) + (smartDay - day - 1) + from;
+			} else if ((smartDay - dayNow) < 5) {
+				thisDelta = from + (smartDay - dayNow) * 24;
 			}
+			console.log(userSchedule[i]['title'] + '\'s thisDelta=' + thisDelta + ' and delta=' + delta);
 			if (isThisNow(day, from, delta)) {
 				message = 'You should be in the ' + userSchedule[i]['type'].toLowerCase() + ' ' + userSchedule[i]['title'] + ' in ' + userSchedule[i]['room'];
 				i = 0;
-			} else if (thisDelta != false && (next == false || thisDelta < delta)) {
+			} else if (thisDelta !=false && (next == false || thisDelta < delta)) {
 				delta = thisDelta;
 				next = userSchedule[i];
 			}
