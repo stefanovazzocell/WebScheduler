@@ -2,6 +2,7 @@
 
 var tmp_calendar = [];
 var tmp_userSchedule = [];
+var subs = {};
 
 var dynamic = {
 	'tool': 1,
@@ -17,7 +18,8 @@ var account = {
 	'authHash': window.location.hash.slice(1),
 	'username': 'TA',
 	'course': 'CPSC110',
-	'email': 'ta@localhost'
+	'email': 'ta@localhost',
+	'privacy': 2
 }
 
 // "Constant" settings
@@ -184,8 +186,10 @@ function uiMessage() {
 		'<code>System.out.println("Hello World");</code>',
 		'<code>printf("Hello, World");</code>',
 		'<b>g.exe 🧔</b>',
+		'<b>' + account['course'] + ' rocks! 🤘</b>',
 		'<b>Have a nice day! ⛅</b>',
 		'<b>Be awesome! ✨</b>',
+		'<b>' + account['username'].split(' ')[0].substring(0,15) + ', you\'re awesome! 😄</b>',
 		'<i>📧 Trey, we have a problem.</i>',
 		'<b>Have lots of fun! 💻</b>',
 		'<b>Autograder is on fire 🔥</b>',
@@ -298,6 +302,40 @@ function setAvailability(day, time, tool = dynamic['tool']) {
 			$('td[data-day="' + day + '"][data-time="' + time + '"]').addClass('table-danger');
 			break;
 	}
+}
+
+/*
+* setupSubs() - Updates the ui to show the list of subs
+*/
+function setupSubs() {
+	if (Object.keys(subs).length === 0) {
+		$('#subid').hide();
+		$('#sublist').html('You do not have any compatible labs or lectures on your schedule');
+	} else {
+		let out = '';
+		Object.keys(subs).forEach(function(key,index) {
+			out += '<option value="' + key + '">' + key + '</option>';
+		});
+		$('#subid').html(out).show();
+		getSubs();
+	}
+}
+
+/*
+* getSub() - Updates the ui to show the subs for the selected option
+*/
+function getSubs() {
+	let item = $('#subid').val();
+	let out = '<h4>Subs for ' + item + '</h4>';
+	out += '<b>Available</b><br>';
+	for (let i = 0; i < subs[item]['Available'].length; i++) {
+		out += subs[item]['Available'][i] + '<br>';
+	}
+	out += '<b>Prefer Not</b><br>';
+	for (let i = 0; i < subs[item]['Prefer Not'].length; i++) {
+		out += subs[item]['Prefer Not'][i] + '<br>';
+	}
+	$('#sublist').html(out);
 }
 
 /*
@@ -465,14 +503,15 @@ function yourNextClass() {
 }
 
 /*
-* loadData(username, email, course, calendar, sched) - loads the data in memory and on the UI
+* loadData(username, email, course, privacy, calendar, sched) - loads the data in memory and on the UI
 * @var username (optional) - the username or false (don't change)
 * @var email (optional) - the email or false (don't change)
 * @var course (optional) - the course or false (don't change)
+* @var privacy (optional) - the privacy or false (don't change)
 * @var cal (optional) - the calendar or false (don't change) or 0 to reset
 * @var sched (optional) - the schedule or false (don't change)
 */
-function loadData(username = false, email = false, course = false, cal = false, sched = false) {
+function loadData(username = false, email = false, course = false, privacy = false, cal = false, sched = false) {
 	let redraw = false;
 	if (username !== false) {
 		account['username'] = username;
@@ -485,6 +524,11 @@ function loadData(username = false, email = false, course = false, cal = false, 
 	}
 	if (course !== false) {
 		account['course'] = course;
+		$('.course').val(course);
+	}
+	if (privacy !== false) {
+		account['privacy'] = privacy;
+		$('#privacy').val(privacy);
 	}
 	if (cal === 0) {
 		makeEmptyCalendar();
@@ -608,6 +652,7 @@ function setupRefresh() {
 	setInterval(function() {
 		// Pull data (other than calendar)
 		pull(false);
+		// Load Current TA
 		// Updates the UI message
 		uiMessage();
 		// Updates the next lab message
@@ -692,7 +737,7 @@ function resetauth() {
 $().ready(function () {
 	// === TESTING ===
 	let test_schedule = [{
-			'title': 'L1E',
+			'title': 'L1Ex',
 			'type': 'Lab',
 			'room': 'X260',
 			'day': 2,
@@ -716,14 +761,34 @@ $().ready(function () {
 			'to': 18
 		},
 		{
-			'title': 'MTG',
+			'title': 'WEM',
 			'type': 'Meeting',
 			'room': 'X800',
 			'day': 6,
 			'from': 20,
 			'to': 21
 		}];
-	loadData('Ta', 'ta@localhost', 'CPSC110', 0, test_schedule);
+	subs = {
+		'L1Ex': {
+			'Available': [
+				'Stefano Vazzoler'
+			],
+			'Prefer Not': [
+				'Ruiyu Gou'
+			]
+		},
+		'L1A': {
+			'Available': [
+				'Qianqian Feng'
+			],
+			'Prefer Not': [
+				'Julian Mentasti',
+				'Doru Kesriyeli'
+			]
+		}
+	}
+	//setupSubs();
+	loadData('Ta', 'ta@localhost', 'CPSC110', 1, 0, test_schedule);
 	// ===============
 
 	// Detect if touch enabled

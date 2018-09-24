@@ -19,7 +19,7 @@
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">My Account</h5>
+						<h5 class="modal-title">My Account</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -39,6 +39,14 @@
 								</div>
 								<input value="stefano@localhost" type="email" id="email" class="form-control" autocomplete="off">
 							</div>
+							<div class="form-group">
+								<label for="privacy">Sub Privacy</label>
+								<select class="form-control" id="privacy">
+									<option value="2">Public</option>
+									<option value="1">Public (Prefer not)</option>
+									<option value="0">Hidden</option>
+								</select>
+							</div>
 							<input type="submit" class="btn btn-sm btn-primary" value="Update"></input>
 						</form>
 					</div>
@@ -56,6 +64,28 @@
 							<button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
 							<button type="button" class="btn btn-sm btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete Account</button>
 						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="subs" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Subs</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<select class="form-control" id="subid" onclick="getSubs()" style="display: none;">
+						</select><br>
+						<p id="sublist">
+							We're loading your data... (if this takes too long, try refreshing the page)
+						</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
@@ -82,6 +112,7 @@
 			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
 				<button type="button" class="btn btn-sm btn-light" onclick="pull(confirm('This will overwrite your local changes'));">Pull Schedule</button>
 				<button type="button" class="btn btn-sm btn-dark" onclick="push();">Push Schedule</button>
+				<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#subs">Find Sub</button>
 			</div><br><br>
 			<div class="btn-group btn-group-sm" id="tool" role="group" aria-label="Tool">
 				<button type="button" onclick="changeTool(0);" class="btn btn-sm btn-success">Available</button>
