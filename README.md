@@ -3,6 +3,17 @@ A web scheduler to aid the scheduling of TA hours
 
 Check out latest version at [https://stefanovazzocell.github.io/WebScheduler/src/](https://stefanovazzocell.github.io/WebScheduler/src/)!
 
+## TODO
+
+[ ] Add 'Who is available at ...?' (and privacy settings)
+[ ] Add 'Quick links' (EdX, Canvas, Course Site, Slack, ...) loaded dynamically
+[ ] Design the login page
+[ ] Design the basic db
+[ ] Design the basic server using nodejs
+[ ] Design the admin UI
+[ ] Write JS for admin UI
+[ ] Connect the admin UI to the API
+
 ## Architecture
 
 `MySQL <-local-> NodeJS <-local-> Nginx <-https-> CloudFlare* <-https-> User's Browser`
