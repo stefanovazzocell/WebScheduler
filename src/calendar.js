@@ -62,28 +62,18 @@ function schedule(at = -1, value = null) {
 	if (value === null) {
 		if (at === -1) {
 			// Return all
-			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('schedule')) : tmp_userSchedule);
+			return tmp_userSchedule;
 		} else {
 			// Return index
-			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('schedule')) : tmp_userSchedule)[at];
+			return tmp_userSchedule[at];
 		}
 	} else {
 		if (at === -1) {
 			// Overwrites the schedule
-			if (dynamic['hasLocalStorage']) {
-				localStorage.setItem('schedule', JSON.stringify(value));
-			} else {
-				tmp_userSchedule = value;
-			}
+			tmp_userSchedule = value;
 		} else {
 			// Sets the value at index
-			if (dynamic['hasLocalStorage']) {
-				let tmp = JSON.parse(localStorage.getItem('schedule'));
-				tmp[at] = value;
-				localStorage.setItem('schedule', JSON.stringify(tmp));
-			} else {
-				tmp_userSchedule[at] = value;
-			}
+			tmp_userSchedule[at] = value;
 		}
 	}
 }
@@ -98,28 +88,18 @@ function calendar(at = -1, value = null) {
 	if (value === null) {
 		if (at === -1) {
 			// Return all
-			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('calendar')) : tmp_calendar);
+			return tmp_calendar;
 		} else {
 			// Return index
-			return (dynamic['hasLocalStorage'] ? JSON.parse(localStorage.getItem('calendar')) : tmp_calendar)[at];
+			return tmp_calendar[at];
 		}
 	} else {
 		if (at === -1) {
 			// Overwrites the calendar
-			if (dynamic['hasLocalStorage']) {
-				localStorage.setItem('calendar', JSON.stringify(value));
-			} else {
-				tmp_calendar = value;
-			}
+			tmp_calendar = value;
 		} else {
 			// Sets the value at index
-			if (dynamic['hasLocalStorage']) {
-				let tmp = JSON.parse(localStorage.getItem('calendar'));
-				tmp[at] = value;
-				localStorage.setItem('calendar', JSON.stringify(tmp));
-			} else {
-				tmp_calendar[at] = value;
-			}
+			tmp_calendar[at] = value;
 		}
 	}
 }
@@ -516,7 +496,7 @@ function loadData(username = false, email = false, course = false, privacy = fal
 	if (username !== false) {
 		account['username'] = username;
 		$('#name').val(username);
-		$('.name').html(username);
+		$('.name').html(username.split(' ')[0]);
 	}
 	if (email !== false) {
 		account['email'] = email;
@@ -788,7 +768,7 @@ $().ready(function () {
 		}
 	}
 	setupSubs();
-	loadData('Ta', 'ta@localhost', 'CPSC110', 1, 0, test_schedule);
+	loadData('John TheTa', 'johnta@localhost', 'CPSC110', 1, 0, test_schedule);
 	// ===============
 
 	// Detect if touch enabled
