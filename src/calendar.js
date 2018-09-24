@@ -211,7 +211,7 @@ function drawCalendar() {
 		}
 		// --- TIME ---
 		outputHtml += '<th scope="row" data-hour=' + time + '>' + pre + '</th>';
-		outputHtml += '<th scope="row" data-hour=' + time + '>' + post + '</th>';
+		//outputHtml += '<th scope="row" data-hour=' + time + '>' + post + '</th>';
 		for (let day = 0; day < 7; day++) {
 			let message = '';
 			let userSchedule = schedule();
