@@ -1,16 +1,15 @@
 'use strict';
 
-var calendar = [];
-
-// Current schedule for this user
-var userSchedule = [];
+var tmp_calendar = [];
+var tmp_userSchedule = [];
 
 var dynamic = {
 	'tool': 1,
 	'mouseMsg': false,
 	'mouseMsgTimeout': false,
 	'sel_start': false,
-	'isTouch': false
+	'isTouch': false,
+	'hasLocalStorage': (typeof(Storage) !== "undefined")
 };
 
 var account = {
@@ -27,13 +26,66 @@ var settings = {
 }
 
 /*
+* schedule(at, value) - Sets or gets the schedule
+* @val (optional) at is index of value or -1 for overwrite or select all
+* @val (optional) value to set or entire schedule if -1 for overwrite
+* @returns the value at index or all if at = -1
+*/
+function schedule(at = -1, value = null) {
+	if (value === null) {
+		if (at === -1) {
+			// Return all
+			return tmp_userSchedule;
+		} else {
+			// Return index
+			return tmp_userSchedule[at];
+		}
+	} else {
+		if (at === -1) {
+			// Overwrites the calendar
+			tmp_userSchedule = value;
+		} else {
+			// Sets the value at index
+			tmp_userSchedule[at] = value;
+		}
+	}
+}
+
+/*
+* calendar(at, value) - sets or gets the calendar
+* @val (optional) at is index of value or -1 for overwrite or select all
+* @val (optional) value to set or entire calendar if -1 for overwrite
+* @returns the value at index or all if at = -1
+*/
+function calendar(at = -1, value = null) {
+	if (value === null) {
+		if (at === -1) {
+			// Return all
+			return tmp_calendar;
+		} else {
+			// Return index
+			return tmp_calendar[at];
+		}
+	} else {
+		if (at === -1) {
+			// Overwrites the calendar
+			tmp_calendar = value;
+		} else {
+			// Sets the value at index
+			tmp_calendar[at] = value;
+		}
+	}
+}
+
+/*
 * makeEmptyCalendar() - Makes an empty calendar
 */
 function makeEmptyCalendar() {
-	calendar = []; // Reset the calendar
+	let tmp = [];
 	for (let i = 0; i < (settings['fromto'][1] - settings['fromto'][0]) * 7; i+=0.5) {
-		calendar.push(0); // Add 0 to the calendar
+		tmp.push(0); // Add 0 to the calendar
 	}
+	calendar(-1, tmp);
 }
 
 /*
@@ -46,12 +98,9 @@ function makeEmptyCalendar() {
 */
 function calendarAt(day, time, value = undefined, updateUI = false) {
 	if (value === undefined) {
-		return calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day];
+		return calendar((time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day);
 	} else {
-		console.log((time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day);
-		console.log(calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day]);
-		console.log(value);
-		calendar[(time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day] = value;
+		calendar((time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day, value);
 		if (updateUI) {
 			setAvailability(day, time, value);
 		}
@@ -99,9 +148,6 @@ function uiMessage() {
 		'<b>Follow the recipe 📖</b>'
 	];
 	let message = messages[getRandom(0, messages.length -1)];
-	if (userSchedule.length == 0) {
-		//
-	}
 	$('.message').html(message);
 }
 
@@ -135,6 +181,7 @@ function drawCalendar() {
 		outputHtml += '<th scope="row" data-hour=' + time + '>' + post + '</th>';
 		for (let day = 0; day < 7; day++) {
 			let message = '';
+			let userSchedule = schedule();
 			for (var i = 0; i < userSchedule.length; i++) {
 				if (userSchedule[i]['day'] == day && userSchedule[i]['from'] <= time && userSchedule[i]['to'] > time) {
 					if (message != '') {
@@ -319,6 +366,7 @@ function yourNextClass() {
 	let timeNow = now.getHours();
 	timeNow += (now.getMinutes() / 60);
 	let dayNow = (now.getDay() + 6) % 7;
+	let userSchedule = schedule();
 	if (userSchedule.length != 0) {
 		let next = false;
 		let delta = 24 * 4;
@@ -371,14 +419,14 @@ function yourNextClass() {
 }
 
 /*
-* loadData(username, email, course, calendar, schedule) - loads the data in memory and on the UI
+* loadData(username, email, course, calendar, sched) - loads the data in memory and on the UI
 * @var username (optional) - the username or false (don't change)
 * @var email (optional) - the email or false (don't change)
 * @var course (optional) - the course or false (don't change)
 * @var cal (optional) - the calendar or false (don't change) or 0 to reset
-* @var schedule (optional) - the schedule or false (don't change)
+* @var sched (optional) - the schedule or false (don't change)
 */
-function loadData(username = false, email = false, course = false, cal = false, schedule = false) {
+function loadData(username = false, email = false, course = false, cal = false, sched = false) {
 	let redraw = false;
 	if (username !== false) {
 		account['username'] = username;
@@ -393,15 +441,14 @@ function loadData(username = false, email = false, course = false, cal = false, 
 		account['course'] = course;
 	}
 	if (cal === 0) {
-		console.log('ok');
 		makeEmptyCalendar();
 		redraw = true;
 	} else if (cal !== false) {
-		calendar = cal;
+		calendar(-1, cal);
 		redraw = true;
 	}
-	if (schedule !== false) {
-		userSchedule = schedule;
+	if (sched !== false) {
+		schedule(-1, sched);
 		redraw = true;
 		// Give the browser a break
 		setTimeout(yourNextClass, 250);
