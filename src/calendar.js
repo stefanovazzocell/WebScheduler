@@ -795,7 +795,7 @@ $().ready(function () {
 		}
 	}
 	setupSubs();
-	loadData('John TheTa', 'johnta@localhost', 'CPSC110', 1, 0, test_schedule);
+	loadData('Alex TheTa', 'alexta@localhost', 'CPSC110', 1, 0, test_schedule);
 	// ===============
 
 	// Detect if touch enabled
