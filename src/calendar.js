@@ -694,20 +694,20 @@ function push() {
 * @var pullCal if calendar should be refreshed as well 
 */
 function pull(pullCal = false) {
-	$.post('api/pull/', { auth: account['authHash'] }, function(result, status){
+	$.post('api/pull/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
+			loadData(result['username'], result['email'], result['course'], result['privacy'], (pullCal ? result['calendar'] : false), result['schedule']);
 			$('#pull').removeClass('disabled');
 		}
 	}).fail(function () {
 		checkStatus(-1);
 	});
 }
-
 /*
 * update() - Updates the current user's account info
 */
 function update() {
-	$.post('api/update/', { auth: account['authHash'] }, function(result, status){
+	$.post('api/update/', { 'auth': account['authHash'], 'username': account['username'], 'email': account['email'], 'privacy': account['privacy'] }, function(result, status){
 		if (checkStatus(status)) {
 			// Pulls the latest info (excluding the calendar)
 			pull();
@@ -721,7 +721,7 @@ function update() {
 * deleteme() - Deletes the user's account 
 */
 function deleteme() {
-	$.post('api/deleteme/', { auth: account['authHash'] }, function(result, status){
+	$.post('api/deleteme/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			alert('Your account has been deleted');
 			window.location.replace('about:blank');
@@ -735,7 +735,7 @@ function deleteme() {
 * resetauth() - Resets the authentication hash
 */
 function resetauth() {
-	$.post('api/resetauth/', { auth: account['authHash'] }, function(result, status){
+	$.post('api/resetauth/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			alert('Done, check your emails');
 			window.location.replace('about:blank');
@@ -820,10 +820,10 @@ $().ready(function () {
 		}
 	});
 	// Buttons
-	$('#push').select(function() {
+	$('#push').click(function() {
 		push();
 	});
-	$('#pull').select(function() {
+	$('#pull').click(function() {
 		if (!$(this).hasClass('disabled')) {
 			$(this).addClass('disabled');
 			pull(confirm('This will overwrite your local changes'));
