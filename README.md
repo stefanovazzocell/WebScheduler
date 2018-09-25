@@ -99,6 +99,7 @@ Here's an example
 
 ### Coordinator/Admin
 
+URL: `\api\admin\{action}\`
 
 
 ### Extra
