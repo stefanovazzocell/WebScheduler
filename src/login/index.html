@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="manifest" href="../cdn/manifest.webmanifest">
+		<link rel="icon" href="../cdn/icon192.png">
+		<title>Scheduler Login</title>
+	</head>
+	<body>
+		<nav class="navbar fixed-top navbar-dark bg-dark">
+			<span class="navbar-brand">Scheduler Login</span>
+		</nav>
+		<div class="container-fluid" style="padding-top: 80px; padding-bottom: 80px;">
+			<div class="alert alert-danger" style="display: none;" id="alert-wp">
+				🔑 Your authentication code is expired or invalid. Please, try checking your emails again.
+			</div>
+			<div class="alert alert-danger" style="display: none;" id="alert-bf">
+				🚨 Your IP is temporarely banned from making requests to our server since it has been caught trying to brute force an access code. Try again in 5 minutes.
+			</div>
+			<br>
+			<nav>
+				<div class="nav nav-tabs" role="tablist">
+					<a class="nav-item nav-link active" data-toggle="tab" href="#nav-tas" role="tab">TA</a>
+					<a class="nav-item nav-link" data-toggle="tab" href="#nav-coordinator" role="tab">Coordinator</a>
+				</div>
+			</nav><br>
+			<div class="tab-content" style="padding-right: 20px; padding-left: 20px;">
+				<div class="tab-pane fade show active" id="nav-tas" role="tabpanel">
+					<form id="ta-login">
+						<h4>TA Login</h4><br>
+						<div class="form-group">
+							<label for="code">Your secret code</label>
+							<input type="text" class="form-control" id="ta-secret" placeholder="Enter your secret code">
+							<small class="form-text text-muted">Check your emails to view your code</small>
+							<small class="form-text text-muted">Don't share your secret with others</small>
+							<small class="form-text text-muted">Remember to logout if you're using a public machine</small>
+						</div>
+						<button type="submit" class="btn btn-primary">Login</button>
+					</form>
+				</div>
+				<div class="tab-pane fade" id="nav-coordinator" role="tabpanel">
+					<form id="coordinator-login">
+						<div class="form-group">
+							<h4>Coordinator Login</h4><br>
+							<label for="code">Your secret code</label>
+							<input type="text" class="form-control" id="coordinator-secret" placeholder="Enter your secret code">
+							<small class="form-text text-muted">Check your emails to view your code</small>
+							<small class="form-text text-muted">Don't share your secret with others</small>
+							<small class="form-text text-muted">Remember to logout if you're using a public machine</small>
+						</div>
+						<button type="submit" class="btn btn-primary">Login</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar fixed-bottom navbar-dark bg-dark">
+			<span class="navbar-text">
+				by <a href="https://stefanovazzoler.com" target="_blank">Stefano Vazzoler</a>
+			</span>
+			<a href="https://github.com/stefanovazzocell/WebScheduler" target="_blank" class="btn btn-outline-light btn-sm">GitHub</a>
+		</nav>
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<script type="text/javascript">
+			$().ready(function () {
+				if (window.location.hash.slice(1) == 'wp') {
+					$('#alert-wp').show();
+				}
+				if (window.location.hash.slice(1) == 'bf') {
+					$('#alert-bf').show();
+				}
+				if (typeof(Storage) !== "undefined") {
+					localStorage.clear();
+				}
+				$('#ta-login').submit(function (event) {
+					event.preventDefault();
+					window.location.replace('../#' + $('#ta-secret').val());
+				});
+				$('#coordinator-login').submit(function (event) {
+					event.preventDefault();
+					window.location.replace('../admin/#' + $('#coordinator-secret').val());
+				});
+			});
+		</script>
+	</body>
+</html>
