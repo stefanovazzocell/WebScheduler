@@ -566,6 +566,7 @@ function loadData(username = false, email = false, course = false, privacy = fal
 */
 function checkStatus(status) {
 	$('#alert-offline').hide();
+	$('#pull').removeClass('disabled');
 	switch (status) {
 		case 200:
 			$('#alert-loading').hide();
@@ -677,10 +678,11 @@ function setupRefresh() {
 * push() - Pushes the current calendar to the server
 */
 function push() {
-	$.post('api/push/', { auth: account['authHash'] }, function(result, status){
+	$.post('api/push/', { 'auth': account['authHash'], 'calendar': calendar(-1) }, function(result, status){
 		if (checkStatus(status)) {
 			$('#draft').hide();
-			// TODO
+			// Pulls the latest info
+			pull(true);
 		}
 	}).fail(function () {
 		checkStatus(-1);
@@ -691,10 +693,10 @@ function push() {
 * pull() - Pulls the data from the server
 * @var pullCal if calendar should be refreshed as well 
 */
-function pull(pullCal) {
+function pull(pullCal = false) {
 	$.post('api/pull/', { auth: account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
-			// TODO
+			$('#pull').removeClass('disabled');
 		}
 	}).fail(function () {
 		checkStatus(-1);
@@ -707,7 +709,8 @@ function pull(pullCal) {
 function update() {
 	$.post('api/update/', { auth: account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
-			// TODO
+			// Pulls the latest info (excluding the calendar)
+			pull();
 		}
 	}).fail(function () {
 		checkStatus(-1);
@@ -720,7 +723,7 @@ function update() {
 function deleteme() {
 	$.post('api/deleteme/', { auth: account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
-			alert('You\'re account has been deleted');
+			alert('Your account has been deleted');
 			window.location.replace('about:blank');
 		}
 	}).fail(function () {
@@ -814,6 +817,16 @@ $().ready(function () {
 		if (dynamic['mouseMsg']) {
 			var cpos = { top: e.pageY + 10, left: e.pageX + 10 };
 			$('#mouseMsg').offset(cpos).html(dynamic['mouseMsg']);
+		}
+	});
+	// Buttons
+	$('#push').select(function() {
+		push();
+	});
+	$('#pull').select(function() {
+		if (!$(this).hasClass('disabled')) {
+			$(this).addClass('disabled');
+			pull(confirm('This will overwrite your local changes'));
 		}
 	});
 });
