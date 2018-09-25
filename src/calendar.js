@@ -59,6 +59,8 @@ function commitToLS(caldr = 0, settng = 0) {
 			account['authHash'] = localStorage.getItem('authHash');
 		} else if (account['authHash'] !== '') {
 			localStorage.setItem('authHash', account['authHash']);
+		} else {
+			window.location.replace('login/');
 		}
 	}
 }
