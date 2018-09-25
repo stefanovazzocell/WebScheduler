@@ -5,8 +5,6 @@ Check out latest version at [https://stefanovazzocell.github.io/WebScheduler/src
 
 ## TODO
 
-[ ] Design the login page
-
 [ ] Design the basic db
 
 [ ] Design the basic server using nodejs
@@ -69,6 +67,7 @@ RESPONSE TYPE: `json`
 |           200 | OK |
 |           400 | Bad Request |
 |           401 | Wrong auth hash |
+|           403 | Brute force detected |
 |           500 | Server error |
 
 
