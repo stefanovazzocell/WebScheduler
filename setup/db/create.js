@@ -29,19 +29,15 @@ function create() {
 		console.log('Creating collections...');
 		dbo.createCollection('admin', function(err, res) {
 			if (err) throw err;
-			console.log('1/4 - admin');
+			console.log('1/3 - admin');
 			dbo.createCollection('course', function(err, res) {
 				if (err) throw err;
-				console.log('2/4 - course');
+				console.log('2/3 - course');
 				dbo.createCollection('ta', function(err, res) {
 					if (err) throw err;
-					console.log('3/4 - ta');
-					dbo.createCollection('items', function(err, res) {
-						if (err) throw err;
-						console.log('4/4 - items');
-						console.log('OK');
-						db.close();
-					});
+					console.log('3/3 - ta');
+					console.log('OK');
+					db.close();
 				});
 			});
 		});
