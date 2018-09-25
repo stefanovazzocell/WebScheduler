@@ -738,7 +738,7 @@ function resetauth() {
 	$.post('api/resetauth/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			alert('Done, check your emails');
-			window.location.replace('about:blank');
+			window.location.replace('login/');
 		}
 	}).fail(function () {
 		checkStatus(-1);
