@@ -690,7 +690,7 @@ function setupRefresh() {
 * push() - Pushes the current calendar to the server
 */
 function push() {
-	$.post('api/push/', { 'auth': account['authHash'], 'calendar': calendar(-1) }, function(result, status){
+	$.post('api/ta/push/', { 'auth': account['authHash'], 'calendar': calendar(-1) }, function(result, status){
 		if (checkStatus(status)) {
 			$('#draft').hide();
 			// Pulls the latest info
@@ -706,7 +706,7 @@ function push() {
 * @var pullCal if calendar should be refreshed as well 
 */
 function pull(pullCal = false) {
-	$.post('api/pull/', { 'auth': account['authHash'] }, function(result, status){
+	$.post('api/ta/pull/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			loadData(result['username'], result['email'], result['course'], result['privacy'], (pullCal ? result['calendar'] : false), result['schedule']);
 			$('#pull').removeClass('disabled');
@@ -719,7 +719,7 @@ function pull(pullCal = false) {
 * update() - Updates the current user's account info
 */
 function update() {
-	$.post('api/update/', { 'auth': account['authHash'], 'username': account['username'], 'email': account['email'], 'privacy': account['privacy'] }, function(result, status){
+	$.post('api/ta/update/', { 'auth': account['authHash'], 'username': account['username'], 'email': account['email'], 'privacy': account['privacy'] }, function(result, status){
 		if (checkStatus(status)) {
 			// Pulls the latest info (excluding the calendar)
 			pull();
@@ -743,7 +743,7 @@ function logout() {
 * deleteme() - Deletes the user's account 
 */
 function deleteme() {
-	$.post('api/deleteme/', { 'auth': account['authHash'] }, function(result, status){
+	$.post('api/ta/deleteme/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			alert('Your account has been deleted');
 			if (dynamic['hasLocalStorage']) {
@@ -760,7 +760,7 @@ function deleteme() {
 * resetauth() - Resets the authentication hash
 */
 function resetauth() {
-	$.post('api/resetauth/', { 'auth': account['authHash'] }, function(result, status){
+	$.post('api/ta/resetauth/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			alert('Done, check your emails');
 			if (dynamic['hasLocalStorage']) {
