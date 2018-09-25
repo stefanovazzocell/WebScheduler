@@ -25,7 +25,17 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<p class="text-primary">Account Settings</p>
+						<p class="text-danger">General</p>
+						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+							<button type="button" class="btn btn-sm btn-dark" onclick="logout();">Logout</button>
+						</div><br><br>
+						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+							<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
+						</div>
+					</div>
+					<hr>
+					<div class="modal-body">
+						<p class="text-primary">Account</p>
 						<form onsubmit="event.preventDefault(); update(); $('#account').modal('hide');">
 							<div class="input-group input-group-sm mb-3">
 								<div class="input-group-prepend">
@@ -49,13 +59,6 @@
 							</div>
 							<input type="submit" class="btn btn-sm btn-primary" value="Update"></input>
 						</form>
-					</div>
-					<hr>
-					<div class="modal-body">
-						<p class="text-danger">UI Settings</p>
-						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
-							<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
-						</div>
 					</div>
 					<hr>
 					<div class="modal-body">

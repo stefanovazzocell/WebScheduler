@@ -54,6 +54,12 @@ function commitToLS(caldr = 0, settng = 0) {
 			// Save
 			localStorage.setItem('bigIcons', JSON.stringify(dynamic['bigIcons']));
 		}
+		// Auth Hash
+		if ((account['authHash'] === '') && (localStorage.getItem('authHash') != null)) {
+			account['authHash'] = localStorage.getItem('authHash');
+		} else if (account['authHash'] !== '') {
+			localStorage.setItem('authHash', account['authHash']);
+		}
 	}
 }
 
@@ -579,6 +585,7 @@ function checkStatus(status) {
 		case 401:
 			// Authentication error
 			$('#alert-error').html('🔑 Your authentication code is expired. Please, try checking your emails again.').show();
+			window.location.replace('login/#wp');
 			return false;
 		case 500:
 			// Server error
@@ -718,13 +725,26 @@ function update() {
 }
 
 /*
+* logout() - clears storage and logs user out
+*/
+function logout() {
+	if (dynamic['hasLocalStorage']) {
+		localStorage.clear();
+	}
+	window.location.replace('login/');
+}
+
+/*
 * deleteme() - Deletes the user's account 
 */
 function deleteme() {
 	$.post('api/deleteme/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			alert('Your account has been deleted');
-			window.location.replace('about:blank');
+			if (dynamic['hasLocalStorage']) {
+				localStorage.clear();
+			}
+			window.location.replace('login/');
 		}
 	}).fail(function () {
 		checkStatus(-1);
@@ -738,6 +758,9 @@ function resetauth() {
 	$.post('api/resetauth/', { 'auth': account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
 			alert('Done, check your emails');
+			if (dynamic['hasLocalStorage']) {
+				localStorage.clear();
+			}
 			window.location.replace('login/');
 		}
 	}).fail(function () {
@@ -747,6 +770,8 @@ function resetauth() {
 
 // Startup
 $().ready(function () {
+	// Gets the saved hash
+	commitToLS();
 	// === TESTING ===
 	let test_schedule = [{
 			'title': 'L1Ex',
