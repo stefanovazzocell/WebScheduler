@@ -5,6 +5,9 @@ body {
 .table-wrapper {
 	overflow: auto;
 	width: 100%;
+}
+
+.table-wrapper, .message {
 	/* disabled text selection */
 	-webkit-user-select: none;
 	-moz-user-select: none;

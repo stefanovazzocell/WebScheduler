@@ -39,6 +39,7 @@ function commitToLS(caldr = 0, settng = 0) {
 		if (caldr === -1 && localStorage.getItem('calendar') != null) {
 			// Retrive
 			tmp_calendar = JSON.parse(localStorage.getItem('calendar'));
+			$('#draft').show();
 		} else if (caldr === 1) {
 			// Save
 			localStorage.setItem('calendar', JSON.stringify(tmp_calendar));
@@ -131,6 +132,7 @@ function calendarAt(day, time, value = undefined, updateUI = false) {
 	if (value === undefined) {
 		return calendar((time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day);
 	} else {
+		$('#draft').show();
 		calendar((time - settings['fromto'][0]) * 2 + (settings['fromto'][1] - settings['fromto'][0]) * 2 * day, value);
 		if (updateUI) {
 			setAvailability(day, time, value);
@@ -677,6 +679,7 @@ function setupRefresh() {
 function push() {
 	$.post('api/push/', { auth: account['authHash'] }, function(result, status){
 		if (checkStatus(status)) {
+			$('#draft').hide();
 			// TODO
 		}
 	}).fail(function () {

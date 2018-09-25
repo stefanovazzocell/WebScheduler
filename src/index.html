@@ -110,7 +110,7 @@
 				Here's your <b class="course">CPSC110</b> schedule; <span class="whatsup"></span>
 			</p>
 			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
-				<button type="button" class="btn btn-sm btn-light" onclick="pull(confirm('This will overwrite your local changes'));">Pull Schedule</button>
+				<button type="button" class="btn btn-sm btn-light" id="pull" onclick="pull(confirm('This will overwrite your local changes'));">Pull Schedule</button>
 				<button type="button" class="btn btn-sm btn-dark" onclick="push();">Push Schedule</button>
 				<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#subs">Find Sub</button>
 			</div><br><br>
@@ -119,7 +119,7 @@
 				<button type="button" onclick="changeTool(1);" class="btn btn-sm btn-warning font-weight-bold">Prefer Not</button>
 				<button type="button" onclick="changeTool(2);" class="btn btn-sm btn-danger">Not Available</button>
 			</div><br>
-			<span>The current mode is <b class="tool">Prefer Not</b>.</span><br><br>
+			<span>The current mode is <b class="tool">Prefer Not</b>.</span> <span id="draft" style="display: hidden;">This is a local <i>draft</i> you can <a href="javascript:$('#pull').click()">retrive</a> the server version.</span><br><br>
 			<div class="table-wrapper">
 				<table class="table table-bordered table-sm" style="text-align: center;">
 				<thead class="thead-dark">
