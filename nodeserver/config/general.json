@@ -1,0 +1,8 @@
+{
+	"port": 8080,
+	"headers": {
+		"active": false,
+		"Origin": "*",
+		"Headers": "*"
+	}
+}

@@ -1,0 +1,5 @@
+{
+	"use_connection_ip": true,
+	"use_proxy": false,
+	"use_cloudflare": false
+}
