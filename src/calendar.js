@@ -584,8 +584,11 @@ function checkStatus(status) {
 			return false;
 		case 401:
 			// Authentication error
-			$('#alert-error').html('🔑 Your authentication code is expired. Please, try checking your emails again.').show();
 			window.location.replace('login/#wp');
+			return false;
+		case 403:
+			// Brute Force error
+			window.location.replace('login/#bf');
 			return false;
 		case 500:
 			// Server error
