@@ -1,8 +1,9 @@
 {
 	"port": 8080,
 	"headers": {
-		"active": false,
+		"active": true,
 		"Origin": "*",
 		"Headers": "*"
-	}
+	},
+	"dburl": "mongodb://localhost:27017/"
 }
