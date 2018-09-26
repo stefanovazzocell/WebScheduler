@@ -19,9 +19,9 @@ Check out latest version at [https://stefanovazzocell.github.io/WebScheduler/src
 
 ## Architecture
 
-`MySQL <-local-> NodeJS <-local-> Nginx <-https-> CloudFlare* <-https-> User's Browser`
+`MongoDB <-local-> NodeJS <-local-> Nginx <-https-> CloudFlare* <-https-> User's Browser`
 
-**MySql**
+**MongoDB**
 
 Database... duh
 
@@ -102,4 +102,80 @@ Here's an example
 URL: `\api\admin\{action}\`
 
 
-### Extra
+## Database
+
+**admin**
+
+```json
+{
+	"name": "Tim Schmitt",
+	"email": "ts@localhost",
+	"auth": "secret1234",
+	"courses": [
+		"CPSC110",
+		"CPSC221"
+	]
+}
+```
+
+
+**course**
+
+```json
+{
+	"name": "CPSC110",
+	"items": [
+		{
+			"name": "L1A",
+			"type": "Lab",
+			"room": "X250",
+			"needed": 2,
+			"day": 4,
+			"from": 9,
+			"to": 12,
+			"tas": [
+				"{object id for MongoDB}",
+				"{object id for MongoDB}"
+			]
+		}
+	],
+	"added": "",
+}
+```
+
+**ta**
+
+Note: As `_id` the registration email is used, everything else uses the preferred `email`
+
+```json
+{
+	"_id": "stefano@school.locahost",
+	"name": "Stefano Vazzoler",
+	"course": "CPSC110",
+	"email": "stefano@private.localhost",
+	"auth": "secret1234",
+	"privacy": 1,
+	"calendar": [0, 0, 0, 0, 0, 0],
+	"schedule": [
+		{
+			"title": "L1A",
+			"type": "Lab",
+			"room": "X250",
+			"day": 4,
+			"from": 9,
+			"to": 12
+		},
+		{
+			"title": "MTG",
+			"type": "Meeting",
+			"room": "X800",
+			"day": 3,
+			"from": 17,
+			"to": 18
+		}
+	],
+	"lastPush": 1500000000000
+}
+```
+
+`Last push` from `new Date().getTime()`
