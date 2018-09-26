@@ -62,13 +62,13 @@ function resetCounter() {
 * @return true if user is allowed, false otherwise
 */
 function count(req) {
-	var ip = getIp(req);
+	var id = getIp(req);
 	// Check if user is banned or maxed
 	if (isBanned(id)) {
 		return false;
 	}
 	// Count
-	count(id);
+	addToUser(id);
 }
 
 // Making public functions available
@@ -83,8 +83,8 @@ module.exports = {
 	* @returns true if user is allowed, false otherwise
 	*/
 	check: function (req, res) {
-		var ip = getIp(req);
-		if (! isBanned(ip)) {
+		var id = getIp(req);
+		if (! isBanned(id)) {
 			// Continue execution
 			return true;
 		} else {
@@ -107,7 +107,7 @@ module.exports = {
 		// At some random time (between 0 and 60 seconds) set ban timer
 		setTimeout(function () {
 			// Start Reset Ban Timer
-			setInterval(resetCounter, banTime * 60 * 1000);
+			setInterval(resetCounter, resetTime * 60 * 1000);
 			if (isDev) msg('Started resetBan interval', 'log');
 		}, (Math.random() * 60 * 1000));
 		// Report completed startup
