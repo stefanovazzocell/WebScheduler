@@ -34,9 +34,6 @@ module.exports = {
 	ta: {
 		// Authenticate user
 		auth: function (req, res, callbackFn) {
-			console.log(req.body);
-			console.log(req.body.auth);
-			console.log(String(req.body.auth));
 			db_ta.find({ 'auth': String(req.body.auth) }).toArray(function(err, result) {
 				if (err) throw err;
 				if (result.length) {
@@ -48,26 +45,41 @@ module.exports = {
 		},
 		// Sends user data
 		pull: function (req, res) {
-			// TODO
+			db_ta.find({ 'auth': String(req.body.auth) }).toArray(function(err, result) {
+				if (err) throw err;
+				if (result.length) {
+					result = result[0];
+					let toReturn = { 'username': result['name'], 'email': result['email'], 'course': result['course'], 'privacy': result['privacy'],  'calendar': result['calendar'], 'schedule': result['schedule']};
+					res.send(toReturn);
+				} else {
+					res.status(500);
+					res.send();
+				}
+			});
 		},
 		// Saves user data
 		push: function (req, res) {
+			res.send('OK');
 			// TODO
 		},
 		// Updates user info
 		update: function (req, res) {
+			res.send('OK');
 			// TODO
 		},
 		// Removes user
 		deleteme: function (req, res) {
+			res.send('OK');
 			// TODO
 		},
 		// Resets auth
 		resetauth: function (req, res) {
+			res.send('OK');
 			// TODO
 		},
 		// Finds available subs
 		getsubs: function (req, res) {
+			res.send('OK');
 			// TODO
 		}
 	},
