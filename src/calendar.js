@@ -605,7 +605,7 @@ function checkStatus(status) {
 			return false;
 		default:
 			// Unknown error
-			$('#alert-error').html('🤔 Something went wrong with your request. Please, try again later.<br>(error code: ' + status + ')').show();
+			$('#alert-error').html('🤔 Something went wrong with your request. Please, try again later.').show();
 			return false;
 	}
 }
