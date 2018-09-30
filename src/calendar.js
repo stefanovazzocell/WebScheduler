@@ -687,10 +687,37 @@ function setupRefresh() {
 }
 
 /*
+* request(action, data, successFn) - is an ajax request
+* @var action is the action to take
+* @var data is the data to send (without auth)
+* @successFn is the callback function
+*/
+function request(action, data, successFn) {
+	data['auth'] = account['authHash'];
+	$.ajax({
+		url: 'http://localhost:8080/api/ta/' + action,
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		success: function(data,textStatus) {
+			if (checkStatus(textStatus)) {
+				successFn(data,textStatus);
+			}
+		},
+		error: function(jqXHR,textStatus) {
+			checkStatus(textStatus);
+		}
+	});
+}
+
+/*
 * push() - Pushes the current calendar to the server
 */
 function push() {
-	$.post('http://localhost:8080/api/ta/push/', { 'auth': account['authHash'], 'calendar': calendar(-1) }, function(result, status){
+	request('push', { 'calendar': calendar(-1) }, function() {
+		//
+	});
+	$.post('http://localhost:8080/api/ta/push/', , function(result, status){
 		if (checkStatus(status)) {
 			$('#draft').hide();
 			// Pulls the latest info
@@ -706,26 +733,17 @@ function push() {
 * @var pullCal if calendar should be refreshed as well 
 */
 function pull(pullCal = false) {
-	$.post('http://localhost:8080/api/ta/pull/', { 'auth': account['authHash'] }, function(result, status){
-		if (checkStatus(status)) {
-			loadData(result['username'], result['email'], result['course'], result['privacy'], (pullCal ? result['calendar'] : false), result['schedule']);
-			$('#pull').removeClass('disabled');
-		}
-	}).fail(function (err) {
-		checkStatus(err.status);
+	request('pull', {}, function(result) {
+		loadData(result['username'], result['email'], result['course'], result['privacy'], (pullCal ? result['calendar'] : false), result['schedule']);
+		$('#pull').removeClass('disabled');
 	});
 }
 /*
 * update() - Updates the current user's account info
 */
 function update() {
-	$.post('http://localhost:8080/api/ta/update/', { 'auth': account['authHash'], 'username': account['username'], 'email': account['email'], 'privacy': account['privacy'] }, function(result, status){
-		if (checkStatus(status)) {
-			// Pulls the latest info (excluding the calendar)
-			pull();
-		}
-	}).fail(function () {
-		checkStatus(err.status);
+	request('update', { 'username': account['username'], 'email': account['email'], 'privacy': account['privacy'] }, function() {
+		pull();
 	});
 }
 
@@ -743,16 +761,12 @@ function logout() {
 * deleteme() - Deletes the user's account 
 */
 function deleteme() {
-	$.post('http://localhost:8080/api/ta/deleteme/', { 'auth': account['authHash'] }, function(result, status){
-		if (checkStatus(status)) {
-			alert('Your account has been deleted');
-			if (dynamic['hasLocalStorage']) {
-				localStorage.clear();
-			}
-			window.location.replace('login/');
+	request('deleteme', {}, function() {
+		alert('Your account has been deleted');
+		if (dynamic['hasLocalStorage']) {
+			localStorage.clear();
 		}
-	}).fail(function () {
-		checkStatus(err.status);
+		window.location.replace('login/');
 	});
 }
 
@@ -760,16 +774,12 @@ function deleteme() {
 * resetauth() - Resets the authentication hash
 */
 function resetauth() {
-	$.post('http://localhost:8080/api/ta/resetauth/', { 'auth': account['authHash'] }, function(result, status){
-		if (checkStatus(status)) {
-			alert('Done, check your emails');
-			if (dynamic['hasLocalStorage']) {
-				localStorage.clear();
-			}
-			window.location.replace('login/');
+	request('resetauth', {}, function() {
+		alert('Done, check your emails');
+		if (dynamic['hasLocalStorage']) {
+			localStorage.clear();
 		}
-	}).fail(function () {
-		checkStatus(err.status);
+		window.location.replace('login/');
 	});
 }
 
