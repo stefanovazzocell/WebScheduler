@@ -715,16 +715,8 @@ function request(action, data, successFn) {
 */
 function push() {
 	request('push', { 'calendar': calendar(-1) }, function() {
-		//
-	});
-	$.post('http://localhost:8080/api/ta/push/', , function(result, status){
-		if (checkStatus(status)) {
-			$('#draft').hide();
-			// Pulls the latest info
-			pull(true);
-		}
-	}).fail(function () {
-		checkStatus(err.status);
+		$('#draft').hide();
+		pull(true);
 	});
 }
 
