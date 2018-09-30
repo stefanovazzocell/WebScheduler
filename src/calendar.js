@@ -569,7 +569,7 @@ function loadData(username = false, email = false, course = false, privacy = fal
 
 /*
 * checkStatus(status) - checks the request status and takes actions accordingly
-* @var status the return status code for the request (or -1 for failed)
+* @var status the return status code for the request (or 0 for failed)
 * @return true if everything fine, false on abort
 */
 function checkStatus(status) {
@@ -596,7 +596,7 @@ function checkStatus(status) {
 			// Server error
 			$('#alert-error').html('😞 Server error... Please, try again in a minute.').show();
 			return false;
-		case -1:
+		case 0:
 			// Offline
 			let dt = new Date();
 			let timestamp = (dt.getHours() % 12) + ":" + ((dt.getMinutes() < 10) ? '0' + dt.getMinutes() : dt.getMinutes()) + ((dt.getHours() > 12) ? 'pm' : 'am');
@@ -700,12 +700,10 @@ function request(action, data, successFn) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(data,textStatus) {
-			if (checkStatus(textStatus)) {
-				successFn(data,textStatus);
-			}
+			successFn(data);
 		},
 		error: function(jqXHR,textStatus) {
-			checkStatus(textStatus);
+			checkStatus(jqXHR['status']);
 		}
 	});
 }
