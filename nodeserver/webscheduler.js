@@ -1,6 +1,6 @@
 'use strict';
 /*
-* WebScheduler (Version 0.1.0)
+* WebScheduler (Version 0.1.0)	
 * webscheduler.js - main server fuction
 * by Stefano Vazzoler (stefanovazzocell@gmail.com)
 * https://stefanovazzoler.com/
@@ -29,21 +29,35 @@ const api = require('./modules/api'); // Rate limiting
 */
 
 /*
-* authenticate(req, res, isAdmin) - Authenticates user
+* authenticate(req, res, callbackFn, isAdmin) - Authenticates user
 *
 * @var req from expressjs' request
 * @var res from expressjs' request
+* @var callbackFn is callback function when authentication is over
 * @var isAdmin (optional) true if admin false otherwise
 * @returns true if authenticated, false otherwise
 */
-function authenticate(req, res, isAdmin = false) {
-	if (isAdmin ? api.admin.auth(req, res) : api.ta.auth(req, res)) {
-		return true;
+function authenticate(req, res, callbackFn, isAdmin = false) {
+	if (isAdmin) {
+		api.admin.auth(req, res, function(isAuth) {
+			if (isAuth) {
+				callbackFn();
+			} else {
+				gatekeeper.count(req);
+				res.status(401);
+				res.send();
+			}
+		})
 	} else {
-		gatekeeper.count(req);
-		res.status(401);
-		res.send();
-		return false;
+		api.ta.auth(req, res, function(isAuth) {
+			if (isAuth) {
+				callbackFn();
+			} else {
+				gatekeeper.count(req);
+				res.status(401);
+				res.send();
+			}
+		})
 	}
 }
 
@@ -104,7 +118,7 @@ app.get('*', function (req, res) {
 // TA API request
 app.post('/api/ta/*', function (req, res) {
 	if (gatekeeper.check(req, res)) {
-		if (authenticate(req, res)) {
+		authenticate(req, res, function() {
 			switch (req.params[0]) {
 				case 'pull':
 					api.ta.pull(req, res);
@@ -136,7 +150,7 @@ app.post('/api/ta/*', function (req, res) {
 // Coordinator API request
 app.post('/api/admin/*', function (req, res) {
 	if (gatekeeper.check(req, res)) {
-		if (authenticate(req, res)) {
+		authenticate(req, res, function() {
 			switch (req.params[0]) {
 				case 'pull':
 					break;
