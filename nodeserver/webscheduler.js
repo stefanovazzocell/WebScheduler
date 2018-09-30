@@ -37,7 +37,7 @@ const api = require('./modules/api'); // Rate limiting
 * @returns true if authenticated, false otherwise
 */
 function authenticate(req, res, isAdmin = false) {
-	if (isAdmin ? api.ta.auth(req, res) : api.admin.auth(req, res)) {
+	if (isAdmin ? api.admin.auth(req, res) : api.ta.auth(req, res)) {
 		return true;
 	} else {
 		gatekeeper.count(req);
