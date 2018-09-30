@@ -11,6 +11,7 @@
 */
 
 var db;
+var db_ta, db_admin, db_course;
 
 // Making public functions available
 module.exports = {
@@ -23,16 +24,26 @@ module.exports = {
 				throw err;
 			}
 			db = client.db('webscheduler');
+			db_ta = db.collection("ta");
+			db_admin = db.collection("admin");
+			db_course = db.collection("course");
 			console.log('DB Setup completed');
 			callback();
 		});
 	},
 	ta: {
 		// Authenticate user
-		auth: function (req, res) {
-			db.collection("ta").findOne({ projection: { auth: String(req.body.l) } }, function(err, result) {
+		auth: function (req, res, callbackFn) {
+			console.log(req.body);
+			console.log(req.body.auth);
+			console.log(String(req.body.auth));
+			db_ta.find({ 'auth': String(req.body.auth) }).toArray(function(err, result) {
 				if (err) throw err;
-				console.log(result.name);
+				if (result.length) {
+					callbackFn(true);
+				} else {
+					callbackFn(false);
+				}
 			});
 		},
 		// Sends user data
@@ -62,8 +73,9 @@ module.exports = {
 	},
 	admin: {
 		// Authenticate user
-		auth: function (req, res) {
+		auth: function (req, res, callbackFn) {
 			// TODO
+			callbackFn(false);
 		}
 	}
 }
