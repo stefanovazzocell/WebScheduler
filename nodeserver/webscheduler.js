@@ -143,7 +143,7 @@ app.post('/api/ta/*', function (req, res) {
 					res.status(400);
 					res.send();
 			}
-		}
+		});
 	}
 });
 
@@ -159,7 +159,7 @@ app.post('/api/admin/*', function (req, res) {
 					res.status(400);
 					res.send();
 			}
-		}
+		});
 	}
 });
 
