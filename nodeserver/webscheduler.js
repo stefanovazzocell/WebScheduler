@@ -65,7 +65,7 @@ function authenticate(req, res, callbackFn, isAdmin = false) {
 * Require Settings
 */
 
-var { port, headers, dburl } = require('./config/general');
+var { port, headers, dburl, settings } = require('./config/general');
 
 /*
 * Perform initial checks
@@ -177,7 +177,7 @@ app.post('*', function (req, res) {
 */
 
 // Setup db+api then start
-api.setup(dburl, mClient, function () {
+api.setup(dburl, mClient, settings, function () {
 	// Start server
 	app.listen(port, () => {
 		console.log('Server started on port ' + port);
