@@ -11,7 +11,8 @@ var dynamic = {
 	'sel_start': false,
 	'isTouch': false,
 	'hasLocalStorage': (typeof(Storage) !== "undefined"),
-	'bigIcons': false
+	'bigIcons': false,
+	'previewMode': (window.location.href.includes('previewMode'))
 };
 
 var account = {
@@ -35,16 +36,16 @@ var settings = {
 */
 function commitToLS(caldr = 0, settng = 0) {
 	if (dynamic['hasLocalStorage']) {
+		let saveAllowed = !dynamic['previewMode'];
 		// Calendar
 		if (caldr === -1 && localStorage.getItem('calendar') != null) {
 			// Retrive
 			tmp_calendar = JSON.parse(localStorage.getItem('calendar'));
 			$('#draft').show();
-		} else if (caldr === 1 && tmp_calendar.length !== 0) {
-			console.log(tmp_calendar.length);
+		} else if (caldr === 1 && tmp_calendar.length !== 0 && saveAllowed) {
 			// Save
 			localStorage.setItem('calendar', JSON.stringify(tmp_calendar));
-		} else if (caldr === 1) {
+		} else if (caldr === 1 && saveAllowed) {
 			// Save failed, try to retrive instead
 			commitToLS(-1);
 			drawCalendar();
@@ -55,16 +56,16 @@ function commitToLS(caldr = 0, settng = 0) {
 			if (localStorage.getItem('bigIcons') !== (dynamic['bigIcons'] ? 'true' : 'false')) {
 				toggleTouch();
 			}
-		} else if (settng === 1) {
+		} else if (settng === 1 && saveAllowed) {
 			// Save
 			localStorage.setItem('bigIcons', JSON.stringify(dynamic['bigIcons']));
 		}
 		// Auth Hash
 		if ((account['authHash'] === '') && (localStorage.getItem('authHash') != null)) {
 			account['authHash'] = localStorage.getItem('authHash');
-		} else if (account['authHash'] !== '') {
+		} else if (account['authHash'] !== '' && saveAllowed) {
 			localStorage.setItem('authHash', account['authHash']);
-		} else {
+		} else if (account['authHash'] == '') {
 			window.location.replace('login/');
 		}
 	}
