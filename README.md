@@ -147,15 +147,21 @@ URL: `\api\admin\{action}\`
 
 Note: As `_id` the registration email is used, everything else uses the preferred `email`
 
+|  Value | min | max |
+| :----: | :-- | :-- |
+| `_id`,`email` | 5 | 200 |
+| `name` | 2 | 40 |
+|  | 5 | 40 |
+
 ```json
 {
 	"_id": "stefano@school.locahost",
 	"name": "Stefano Vazzoler",
 	"course": "CPSC110",
 	"email": "stefano@private.localhost",
-	"auth": "secret1234",
+	"auth": "secret",
 	"privacy": 1,
-	"calendar": [0, 0, 0, 0, 0, 0],
+	"calendar": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 	"schedule": [
 		{
 			"title": "L1A",
