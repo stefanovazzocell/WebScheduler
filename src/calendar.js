@@ -40,9 +40,14 @@ function commitToLS(caldr = 0, settng = 0) {
 			// Retrive
 			tmp_calendar = JSON.parse(localStorage.getItem('calendar'));
 			$('#draft').show();
-		} else if (caldr === 1) {
+		} else if (caldr === 1 && tmp_calendar.length !== 0) {
+			console.log(tmp_calendar.length);
 			// Save
 			localStorage.setItem('calendar', JSON.stringify(tmp_calendar));
+		} else if (caldr === 1) {
+			// Save failed, try to retrive instead
+			commitToLS(-1);
+			drawCalendar();
 		}
 		// Settings
 		if (settng === -1 && localStorage.getItem('bigIcons') != null) {
@@ -546,7 +551,7 @@ function loadData(username = false, email = false, course = false, privacy = fal
 			commitToLS(1);
 		}
 	} else if (cal !== false) {
-		let isFirst = (calendar(-1) === []);
+		let isFirst = (calendar(-1).length === [].length);
 		calendar(-1, cal);
 		redraw = true;
 		if (isFirst) {
@@ -561,10 +566,6 @@ function loadData(username = false, email = false, course = false, privacy = fal
 		// Give the browser a break
 		setTimeout(yourNextClass, 250);
 	}
-	if (redraw) {
-		// Give the browser a break
-		setTimeout(drawCalendar, 150);
-	}
 }
 
 /*
@@ -573,7 +574,6 @@ function loadData(username = false, email = false, course = false, privacy = fal
 * @return true if everything fine, false on abort
 */
 function checkStatus(status) {
-	$('#alert-offline').hide();
 	$('#pull').removeClass('disabled');
 	switch (status) {
 		case 200:
@@ -677,13 +677,13 @@ function setupRefresh() {
 		// Updates the next lab message
 		yourNextClass();
 	}, 5 * 60 * 1000);
-	// Every 30 seconds
+	// Every 20 seconds
 	setInterval(function () {
 		// Update the selection for current time slot
 		isThisNow(0,0,0,true);
 		// Commit to LS
 		commitToLS(1);
-	}, 30 * 1000);
+	}, 20 * 1000);
 }
 
 /*
@@ -700,6 +700,7 @@ function request(action, data, successFn) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(data,textStatus) {
+			$('#alert-offline').hide();
 			successFn(data);
 		},
 		error: function(jqXHR,textStatus) {
@@ -725,6 +726,10 @@ function push() {
 function pull(pullCal = false) {
 	request('pull', {}, function(result) {
 		loadData(result['username'], result['email'], result['course'], result['privacy'], (pullCal ? result['calendar'] : false), result['schedule']);
+		if (pullCal) {
+			$('#draft').hide();
+			drawCalendar();
+		}
 		$('#pull').removeClass('disabled');
 	});
 }
@@ -830,7 +835,10 @@ $().ready(function () {
 		}
 	}
 	setupSubs();
-	loadData('Alex TheTa', 'alexta@localhost', 'CPSC110', 1, 0, test_schedule);
+	//loadData('Alex TheTa', 'alexta@localhost', 'CPSC110', 1, 0, test_schedule);
+
+	// If online and env is setup, this should pull the data
+	pull(true);
 	// ===============
 
 	// Detect if touch enabled
