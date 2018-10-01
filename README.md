@@ -115,6 +115,8 @@ URL: `\api\admin\{action}\`
 
 **course**
 
+Node: if `"needed": false` then it's a filler course (meaning a Meeting). Therefore it's low priority
+
 ```json
 {
 	"name": "CPSC110",
@@ -133,7 +135,6 @@ URL: `\api\admin\{action}\`
 			]
 		}
 	],
-	"added": "",
 }
 ```
 
@@ -145,7 +146,6 @@ Note: As `_id` the registration email is used, everything else uses the preferre
 | :----: | :-- | :-- |
 | `_id`,`email` | 5 | 200 |
 | `name` | 2 | 40 |
-|  | 5 | 40 |
 
 ```json
 {
