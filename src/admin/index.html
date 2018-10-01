@@ -12,55 +12,75 @@
 		<nav class="navbar navbar-dark bg-dark">
 			<span class="navbar-brand" style="font-size: 110%;">Scheduler</span>
 			<span class="navbar-text message" onclick="uiMessage();" style="color: #fff;"></span>
-			<button class="btn btn-outline-light btn-sm btn-only-sm" data-toggle="modal" data-target="#account">My Account</button>
+			<button class="btn btn-outline-light" data-toggle="modal" data-target="#account">My Account</button>
 		</nav>
-		<div class="modal fade" id="account" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal fade" id="itemMenu" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title selectedItem">L1A</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+					</div>
+					<div class="modal-body">
+						<p class="text-danger">Danger Zone!</p>
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete</button>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="account" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title">My Account</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
 						<p class="text-danger">General</p>
-						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
-							<button type="button" class="btn btn-sm btn-dark" onclick="logout();">Logout</button>
-						</div><br><br>
-						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
-							<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-dark" onclick="logout();">Logout</button>
 						</div>
 					</div>
 					<hr>
 					<div class="modal-body">
 						<p class="text-primary">Account</p>
 						<form onsubmit="event.preventDefault(); update(); $('#account').modal('hide');">
-							<div class="input-group input-group-sm mb-3">
+							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+									<span class="input-group-text">Name</span>
 								</div>
 								<input type="text" id="name" class="form-control" minlength="5" maxlength="200" autocomplete="off">
 							</div>
-							<div class="input-group input-group-sm mb-3">
+							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+									<span class="input-group-text">Email</span>
 								</div>
 								<input type="email" id="email"class="form-control" minlength="5" maxlength="40" autocomplete="off">
 							</div>
-							<input type="submit" class="btn btn-sm btn-primary" value="Update"></input>
+							<input type="submit" class="btn btn-primary" value="Update"></input>
 						</form>
 					</div>
 					<hr>
 					<div class="modal-body">
 						<p class="text-danger">Danger Zone!</p>
-						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
-							<button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
-							<button type="button" class="btn btn-sm btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete Account</button>
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
@@ -73,15 +93,13 @@
 				📡 You're offline. We'll keep checking for connectivity. (Last attempt at <span id="offline-lastcheck"></span>)
 			</div>
 			<div class="alert alert-warning" id="alert-loading">
-				Please wait while we load your schedule...
+				Please wait while we load your course data...
 			</div>
 			<!-- Mouse Message -->
 			<p style="z-index:10; position:fixed;" id="mouseMsg"></p>
-			<h4>Hello <span class="name">Trey</span>,</h4>
-			<p>
-				Here you can manage the course schedule, start by selecting a course</span>
-			</p>
+			<h4>Hi <span class="name">Trey</span>!</h4>
 			<ul class="nav nav-tabs" id="options" role="tablist">
+				<!-- TODO: disabled -->
 				<li class="nav-item">
 					<a class="nav-link active" id="courses-tab" data-toggle="tab" href="#courses" role="tab">Courses</a>
 				</li>
@@ -89,21 +107,24 @@
 					<a class="nav-link" id="edit-tab" data-toggle="tab" href="#edit" role="tab">Edit</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link disabled" id="tas-tab" data-toggle="tab" href="#tas" role="tab">TAs</a>
+					<a class="nav-link" id="tas-tab" data-toggle="tab" href="#tas" role="tab">TAs</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link disabled" id="taSchedule-tab" data-toggle="tab" href="#taSchedule" role="tab">TA Schedule</a>
+					<a class="nav-link" id="taSchedule-tab" data-toggle="tab" href="#taSchedule" role="tab">TA Schedule</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link disabled" id="courseSchedule-tab" data-toggle="tab" href="#courseSchedule" role="tab">Course Schedule</a>
+					<a class="nav-link" id="courseSchedule-tab" data-toggle="tab" href="#courseSchedule" role="tab">Course Schedule</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link disabled" id="tools-tab" data-toggle="tab" href="#tools" role="tab">Tools</a>
+					<a class="nav-link" id="tools-tab" data-toggle="tab" href="#tools" role="tab">Tools</a>
 				</li>
 			</ul><br>
 			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="courses" role="tabpanel" aria-labelledby="courses-tab">
+				<div class="tab-pane fade show active" id="courses" role="tabpanel" >
 					<h5>Courses</h5>
+					<p>
+						Select a course
+					</p>
 					<div class="input-group mb-3">
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="courselist">Courses</label>
@@ -114,20 +135,69 @@
 							<option value="CPSC221">CPSC221</option>
 						</select>
 					</div>
+					<p>
+						Create a new course
+					</p>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">Course Code</span>
+						</div>
+						<input type="text" class="form-control" placeholder="CPSC000">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" onclick="addCourse()" type="button">Add</button>
+						</div>
+					</div>
+					<p>
+						<small>You can delete a course by selecting it and heading to the 'tools' tab</small>
+					</p>
 				</div>
-				<div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
-					Edit
+				<div class="tab-pane fade" id="edit" role="tabpanel" >
+					<h5>Sections</h5>
+					<div class="list-group">
+						<li data-item="101" data-toggle="modal" data-target="#itemMenu" class="item list-group-item-success list-group-item d-flex justify-content-between align-items-center">
+							101 (Monday at 9:00)
+							<span class="badge badge-primary badge-pill">5/3</span>
+						</li>
+						<li data-item="L1A" data-toggle="modal" data-target="#itemMenu" class="item list-group-item-danger list-group-item d-flex justify-content-between align-items-center">
+							L1A (Friday at 9:30)
+							<span class="badge badge-primary badge-pill">2/3</span>
+						</li>
+						<li data-item="101" data-toggle="modal" data-target="#itemMenu" class="item list-group-item-warning list-group-item d-flex justify-content-between align-items-center">
+							OH1 (Thursday at 2:00)
+							<span class="badge badge-primary badge-pill">1/1</span>
+						</li>
+						<li data-item="MTG" data-toggle="modal" data-target="#itemMenu" class="item list-group-item-success list-group-item d-flex justify-content-between align-items-center">
+							MTG (Tuesday at 7:00)
+							<span class="badge badge-primary badge-pill">14/0</span>
+						</li>
+					</div><br>
+					<h5>Add new</h5>
+					<p>
+						Lectures (101), Labs (L1A), Meetings (MTG/MT1), Grading (G01/GM1/GMT), Office hours (OH1/O01/DLC/D01)
+					</p>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">Item Code</span>
+						</div>
+						<input type="text" class="form-control" placeholder="101, L1A, MTG, GRM">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" onclick="addItem()" type="button">Add</button>
+						</div>
+					</div>
+					<p>
+						<small>You're adding a <span id="itemType">...</span></small>
+					</p>
 				</div>
-				<div class="tab-pane fade" id="tas" role="tabpanel" aria-labelledby="tas-tab">
+				<div class="tab-pane fade" id="tas" role="tabpanel" >
 					tas
 				</div>
-				<div class="tab-pane fade" id="taSchedule" role="tabpanel" aria-labelledby="taSchedule-tab">
+				<div class="tab-pane fade" id="taSchedule" role="tabpanel" >
 					taSchedule
 				</div>
-				<div class="tab-pane fade" id="courseSchedule" role="tabpanel" aria-labelledby="courseSchedule-tab">
+				<div class="tab-pane fade" id="courseSchedule" role="tabpanel" >
 					courseSchedule
 				</div>
-				<div class="tab-pane fade" id="tools" role="tabpanel" aria-labelledby="tools-tab">
+				<div class="tab-pane fade" id="tools" role="tabpanel" >
 					tools
 				</div>
 			</div><br><br>
