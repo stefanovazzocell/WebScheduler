@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="icon" href="../cdn/icon192.png">
+		<title>Scheduler [Admin]</title>
+	</head>
+	<body>
+		<nav class="navbar navbar-dark bg-dark">
+			<span class="navbar-brand" style="font-size: 110%;">Scheduler</span>
+			<span class="navbar-text message" onclick="uiMessage();" style="color: #fff;"></span>
+			<button class="btn btn-outline-light btn-sm btn-only-sm" data-toggle="modal" data-target="#account">My Account</button>
+		</nav>
+		<div class="modal fade" id="account" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">My Account</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p class="text-danger">General</p>
+						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+							<button type="button" class="btn btn-sm btn-dark" onclick="logout();">Logout</button>
+						</div><br><br>
+						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+							<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
+						</div>
+					</div>
+					<hr>
+					<div class="modal-body">
+						<p class="text-primary">Account</p>
+						<form onsubmit="event.preventDefault(); update(); $('#account').modal('hide');">
+							<div class="input-group input-group-sm mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+								</div>
+								<input type="text" id="name" class="form-control" minlength="5" maxlength="200" autocomplete="off">
+							</div>
+							<div class="input-group input-group-sm mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+								</div>
+								<input type="email" id="email"class="form-control" minlength="5" maxlength="40" autocomplete="off">
+							</div>
+							<input type="submit" class="btn btn-sm btn-primary" value="Update"></input>
+						</form>
+					</div>
+					<hr>
+					<div class="modal-body">
+						<p class="text-danger">Danger Zone!</p>
+						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+							<button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
+							<button type="button" class="btn btn-sm btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete Account</button>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container-fluid"><br>
+			<!-- Alerts -->
+			<div class="alert alert-danger" style="display: none;" id="alert-error">
+			</div>
+			<div class="alert alert-secondary" style="display: none;" id="alert-offline">
+				📡 You're offline. We'll keep checking for connectivity. (Last attempt at <span id="offline-lastcheck"></span>)
+			</div>
+			<div class="alert alert-warning" id="alert-loading">
+				Please wait while we load your schedule...
+			</div>
+			<!-- Mouse Message -->
+			<p style="z-index:10; position:fixed;" id="mouseMsg"></p>
+			<h4>Hello <span class="name">Stefano</span>,</h4>
+			<p>
+				Here you can manage the course schedule, start by selecting a course</span>
+			</p>
+			<ul class="nav nav-tabs" id="options" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" id="courses-tab" data-toggle="tab" href="#courses" role="tab">Courses</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="edit-tab" data-toggle="tab" href="#edit" role="tab">Edit</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" id="tas-tab" data-toggle="tab" href="#tas" role="tab">TAs</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" id="taSchedule-tab" data-toggle="tab" href="#taSchedule" role="tab">TA Schedule</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" id="courseSchedule-tab" data-toggle="tab" href="#courseSchedule" role="tab">Course Schedule</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" id="tools-tab" data-toggle="tab" href="#tools" role="tab">Tools</a>
+				</li>
+			</ul><br>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="courses" role="tabpanel" aria-labelledby="courses-tab">
+					<h5>Courses</h5>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<label class="input-group-text" for="courselist">Courses</label>
+						</div>
+						<select class="custom-select" id="courselist">
+							<option value="CPSC110">CPSC110</option>
+							<option value="CPSC210">CPSC210</option>
+							<option value="CPSC221">CPSC221</option>
+						</select>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
+					Edit
+				</div>
+				<div class="tab-pane fade" id="tas" role="tabpanel" aria-labelledby="tas-tab">
+					tas
+				</div>
+				<div class="tab-pane fade" id="taSchedule" role="tabpanel" aria-labelledby="taSchedule-tab">
+					taSchedule
+				</div>
+				<div class="tab-pane fade" id="courseSchedule" role="tabpanel" aria-labelledby="courseSchedule-tab">
+					courseSchedule
+				</div>
+				<div class="tab-pane fade" id="tools" role="tabpanel" aria-labelledby="tools-tab">
+					tools
+				</div>
+			</div><br><br>
+		</div>
+		<nav class="navbar navbar-dark bg-dark">
+			<span class="navbar-text">
+				by <a href="https://stefanovazzoler.com" target="_blank">Stefano Vazzoler</a>
+			</span>
+			<a href="https://github.com/stefanovazzocell/WebScheduler" target="_blank" class="btn btn-outline-light btn-sm">GitHub</a>
+		</nav>
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<script src="admin.js"></script>
+	</body>
+</html>
