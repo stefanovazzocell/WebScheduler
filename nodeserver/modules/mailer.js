@@ -19,6 +19,8 @@ module.exports = {
 	setup: function (Mailgun) {
 		if (demoMode) {
 			console.warn('MAILER / send / Careful, is demo mode!');
+			mailer = null;
+		} else {
 			mailer = new Mailgun( {apiKey: mailgun_api, domain: domain} );
 		}
 		var fs = require('fs');
