@@ -1,6 +1,8 @@
 {
 	"mailgun_api": "",
 	"domain": "",
-	"from": "",
-	"webmaster": ""
+	"from": "email@example.com",
+	"webmaster": "wm@example.com",
+	"siteDomain": "localhost",
+	"demoMode": true
 }
