@@ -118,8 +118,10 @@ module.exports = {
 		},
 		// Updates user info
 		update: function (req, res) {
-			if ((String(req.body.username) < 2 || String(req.body.username) > 40) || 
-				(String(req.body.email) < 5 || String(req.body.email) > 200) ||
+			let reqUsername = (req.body.username).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
+			let reqEmail = (req.body.email).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
+			if ((String(reqUsername) < 2 || String(reqUsername) > 40) || 
+				(String(reqEmail) < 5 || String(reqEmail) > 200) ||
 				(req.body.privacy !== 0 && req.body.privacy !== 1 && req.body.privacy !== 2)) {
 				console.log('API / ta.update / Failed check');
 				res.status(400);
@@ -127,7 +129,7 @@ module.exports = {
 				return false;
 			}
 			db_ta.updateOne({ 'auth': String(req.body.auth) },
-				{$set: { name: String(req.body.username), email: String(req.body.email), privacy: req.body.privacy }},
+				{$set: { name: String(reqUsername), email: String(reqEmail), privacy: req.body.privacy }},
 				function(err, result) {
 					if (err) throw err;
 					if (result) {
