@@ -10,9 +10,15 @@
 * Require Node dependencies
 */
 
+const crypto = require('crypto');
+
+/*
+* Get Settings
+*/
+
 var db;
 var settings;
-var sendEmail;
+var sendEmail; // sendEmail(sendfrom, sendto, subject, message, callbackFn)
 var db_ta, db_admin, db_course;
 
 /*
@@ -142,18 +148,34 @@ module.exports = {
 		},
 		// Resets auth
 		resetauth: function (req, res) {
-			let newHash = getAuth();
-			db_ta.updateOne({ 'auth': String(req.body.auth) },
-				{$set: { name: newHash }},
-				function(err, result) {
-					if (err) throw err;
-					if (result) {
-						console.log(newHash);
-					} else {
-						res.status(500);
-						res.send();
-					}
-				});
+			db_ta.find({ 'auth': String(req.body.auth) }).toArray(function(err, result) {
+				if (err) throw err;
+				if (result.length) {
+					result = result[0];
+					let newHash = getAuth();
+					db_ta.updateOne({ 'auth': String(req.body.auth) },
+						{$set: { auth: newHash }},
+						function(err, resultX) {
+							if (err) throw err;
+							if (resultX) {
+								console.log('New hash: ' + newHash);
+								let message = 'Hello, ' + result['name'] + '<br>'
+								message += 'Your authentication code has been reset.<br>';
+								message += 'The new code is <a href=":domain:/#' + newHash + '">' + newHash + '</a>.<br>';
+								message += 'Have a great day!';
+								sendEmail('', result['email'], 'Password Reset', message, function () {
+									res.send();
+								});
+							} else {
+								res.status(500);
+								res.send();
+							}
+						});
+				} else {
+					res.status(500);
+					res.send();
+				}
+			});
 		},
 		// Finds available subs
 		getsubs: function (req, res) {
