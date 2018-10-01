@@ -12,6 +12,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const Mailgun = require('mailgun-js');
 const app = express();
 const mClient = require('mongodb').MongoClient;
 
@@ -19,7 +20,7 @@ const mClient = require('mongodb').MongoClient;
 * Require custom modules
 */
 
-// const dbmanager = require('./modules/dbmanager'); // Database manager
+const mailer = require('./modules/mailer'); // Mailer
 const ipresolver = require('./modules/ipresolver'); // Resolve ip
 const gatekeeper = require('./modules/gatekeeper'); // Rate limiting
 const api = require('./modules/api'); // Rate limiting
@@ -176,8 +177,10 @@ app.post('*', function (req, res) {
 * Connect to DB and start server
 */
 
+mailer.setup(Mailgun);
+
 // Setup db+api then start
-api.setup(dburl, mClient, settings, function () {
+api.setup(dburl, mClient, mailer.send, settings, function () {
 	// Start server
 	app.listen(port, function () {
 		console.log('Server started on port ' + port);
