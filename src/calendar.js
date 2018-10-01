@@ -738,8 +738,12 @@ function pull(pullCal = false) {
 * update() - Updates the current user's account info
 */
 function update() {
+	account['username'] = $('#name').val();
+	account['email'] = $('#email').val();
+	account['privacy'] = parseInt($('#privacy').val());
 	request('update', { 'username': account['username'], 'email': account['email'], 'privacy': account['privacy'] }, function() {
 		pull();
+		uiMessage();
 	});
 }
 
