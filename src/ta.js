@@ -12,13 +12,13 @@ var dynamic = {
 	'isTouch': false,
 	'hasLocalStorage': (typeof(Storage) !== "undefined"),
 	'bigIcons': false,
-	'previewMode': (window.location.href.includes('previewMode'))
+	'incognito': (window.location.href.includes('incognito'))
 };
 
 var account = {
 	'authHash': window.location.hash.slice(1),
 	'username': 'TA',
-	'course': 'CPSC110',
+	'course': 'CPSC',
 	'email': 'ta@localhost',
 	'privacy': 2
 }
@@ -36,7 +36,7 @@ var settings = {
 */
 function commitToLS(caldr = 0, settng = 0) {
 	if (dynamic['hasLocalStorage']) {
-		let saveAllowed = !dynamic['previewMode'];
+		let saveAllowed = !dynamic['incognito'];
 		// Calendar
 		if (caldr === -1 && localStorage.getItem('calendar') != null) {
 			// Retrive
@@ -678,13 +678,13 @@ function setupRefresh() {
 		// Updates the next lab message
 		yourNextClass();
 	}, 5 * 60 * 1000);
-	// Every 20 seconds
+	// Every 15 seconds
 	setInterval(function () {
 		// Update the selection for current time slot
 		isThisNow(0,0,0,true);
 		// Commit to LS
 		commitToLS(1);
-	}, 20 * 1000);
+	}, 15 * 1000);
 }
 
 /*
