@@ -12,6 +12,7 @@
 
 var db;
 var settings;
+var sendEmail;
 var db_ta, db_admin, db_course;
 
 /*
@@ -37,10 +38,11 @@ function getAuth(length = 20) {
 // Making public functions available
 module.exports = {
 	/*
-	* setup(dburl, mClient, givenSettings, callback) - setup db with given url and given mongoclient, then call callback
+	* setup(dburl, mClient, mailerFn, givenSettings, callback) - setup db with given url and given mongoclient, then call callback
 	*/
-	setup: function (dburl, mClient, givenSettings, callback) {
+	setup: function (dburl, mClient, mailerFn, givenSettings, callback) {
 		settings = givenSettings;
+		sendEmail = mailerFn;
 		mClient.connect(dburl, { useNewUrlParser: true }, (err, client) => {
 			if (err) {
 				throw err;
@@ -140,9 +142,18 @@ module.exports = {
 		},
 		// Resets auth
 		resetauth: function (req, res) {
-			let new = getAuth()
-			res.send('OK');
-			// TODO
+			let newHash = getAuth();
+			db_ta.updateOne({ 'auth': String(req.body.auth) },
+				{$set: { name: newHash }},
+				function(err, result) {
+					if (err) throw err;
+					if (result) {
+						console.log(newHash);
+					} else {
+						res.status(500);
+						res.send();
+					}
+				});
 		},
 		// Finds available subs
 		getsubs: function (req, res) {
