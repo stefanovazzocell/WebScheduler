@@ -15,21 +15,21 @@
 			<span class="navbar-text message" onclick="uiMessage();" style="color: #fff;"></span>
 			<button class="btn btn-outline-light btn-sm btn-only-sm" data-toggle="modal" data-target="#account">My Account</button>
 		</nav>
-		<div class="modal fade" id="account" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal fade" id="account" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title">My Account</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
 						<p class="text-danger">General</p>
-						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+						<div class="btn-group btn-group-sm" role="group">
 							<button type="button" class="btn btn-sm btn-dark" onclick="logout();">Logout</button>
 						</div><br><br>
-						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+						<div class="btn-group btn-group-sm" role="group">
 							<button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
 						</div>
 					</div>
@@ -39,13 +39,13 @@
 						<form onsubmit="event.preventDefault(); update(); $('#account').modal('hide');">
 							<div class="input-group input-group-sm mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+									<span class="input-group-text">Name</span>
 								</div>
 								<input type="text" id="name" class="form-control" minlength="5" maxlength="200" autocomplete="off">
 							</div>
 							<div class="input-group input-group-sm mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+									<span class="input-group-text">Email</span>
 								</div>
 								<input type="email" id="email"class="form-control" minlength="5" maxlength="40" autocomplete="off">
 							</div>
@@ -63,7 +63,7 @@
 					<hr>
 					<div class="modal-body">
 						<p class="text-danger">Danger Zone!</p>
-						<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+						<div class="btn-group btn-group-sm" role="group">
 							<button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
 							<button type="button" class="btn btn-sm btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete Account</button>
 						</div>
@@ -74,13 +74,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal fade" id="subs" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal fade" id="subs" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title">Subs</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
@@ -112,12 +112,12 @@
 			<p>
 				Here's your <b class="course"></b> schedule; <span class="whatsup"></span>
 			</p>
-			<div class="btn-group btn-group-sm" role="group" aria-label="Toolbar">
+			<div class="btn-group btn-group-sm" role="group">
 				<button type="button" class="btn btn-sm btn-light" id="pull">Pull Schedule</button>
 				<button type="button" class="btn btn-sm btn-dark" id="push">Push Schedule</button>
 				<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#subs">Find Sub</button>
 			</div><br><br>
-			<div class="btn-group btn-group-sm" id="tool" role="group" aria-label="Tool">
+			<div class="btn-group btn-group-sm" id="tool" role="group">
 				<button type="button" onclick="changeTool(0);" class="btn btn-sm btn-success">Available</button>
 				<button type="button" onclick="changeTool(1);" class="btn btn-sm btn-warning font-weight-bold">Prefer Not</button>
 				<button type="button" onclick="changeTool(2);" class="btn btn-sm btn-danger">Not Available</button>
