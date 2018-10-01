@@ -5,5 +5,8 @@
 		"Origin": "*",
 		"Headers": "*"
 	},
-	"dburl": "mongodb://localhost:27017/"
+	"dburl": "mongodb://localhost:27017/",
+	"settings": {
+		"fromto": [8, 21]
+	}
 }
