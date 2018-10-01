@@ -179,7 +179,7 @@ app.post('*', function (req, res) {
 // Setup db+api then start
 api.setup(dburl, mClient, settings, function () {
 	// Start server
-	app.listen(port, () => {
+	app.listen(port, function () {
 		console.log('Server started on port ' + port);
 	});
 });
