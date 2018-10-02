@@ -4,5 +4,11 @@
 	"from": "email@example.com",
 	"webmaster": "wm@example.com",
 	"siteDomain": "localhost",
-	"demoMode": true
+	"demoMode": true,
+	"cooldown": {
+		"checkagain": 1000,
+		"betweensend": 500
+	},
+	"maxRetries": 2,
+	"autoRush": false
 }
