@@ -102,6 +102,7 @@ URL: `\api\admin\{action}\`
 
 ```json
 {
+	"_id": "??Random Auto id??",
 	"name": "Tim Schmitt",
 	"email": "ts@localhost",
 	"auth": "secret1234",
@@ -119,7 +120,7 @@ Node: if `"needed": false` then it's a filler course (meaning a Meeting). Theref
 
 ```json
 {
-	"name": "CPSC110",
+	"_id": "CPSC110",
 	"items": [
 		{
 			"name": "L1A",
@@ -149,7 +150,7 @@ Note: As `_id` the registration email is used, everything else uses the preferre
 
 ```json
 {
-	"_id": "stefano@school.locahost",
+	"_id": "CPSC110#stefano@school.locahost",
 	"name": "Stefano Vazzoler",
 	"course": "CPSC110",
 	"email": "stefano@private.localhost",
