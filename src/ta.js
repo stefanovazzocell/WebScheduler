@@ -582,7 +582,7 @@ function loadData(username = false, email = false, course = false, privacy = fal
 */
 function checkStatus(status) {
 	$('#pull').removeClass('disabled');
-	$('#alert-error').html('').hide();
+	$('#alert-error').hide();
 	switch (status) {
 		case 200:
 			$('#alert-loading').hide();
