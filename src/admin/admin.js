@@ -134,11 +134,12 @@ function request(action, data, successFn, tryAgain = false) {
 */
 function apiGet() {
 	request('get', {}, function(data) {
-		admin['username'] = data['name'];
+		$('#alert-loading').hide();
+		admin['username'] = data['username'];
 		admin['email'] = data['email'];
 		admin['courses'] = data['courses'];
-		$('.username').html(admin['username']);
-		$('#username').val(admin['username']);
+		$('.name').html(admin['username'].split(' ')[0]);
+		$('#name').val(admin['username']);
 		$('.email').html(admin['email']);
 		$('#email').val(admin['email']);
 		let courses = '';
@@ -147,6 +148,22 @@ function apiGet() {
 		}
 		$('#courselist').html(courses);
 	}, 5);
+}
+
+/*
+* apiCourseAdd(courseName) - Adds a course
+* @var courseName (optional) is the course name to use
+*/
+function apiCourseAdd(courseName = '') {
+	if (courseName === '') {
+		courseName = $('#courseName').val();
+	}
+	request('courseAdd', { 'courseName': courseName }, function(data) {
+		if (courseName === $('#courseName').val()) {
+			$('#courseName').val('');
+		}
+		apiGet();
+	});
 }
 
 $().ready(function () {
