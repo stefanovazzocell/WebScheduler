@@ -48,7 +48,13 @@ function commitToLS(caldr = 0, settng = 0) {
 		} else if (caldr === 1 && saveAllowed) {
 			// Save failed, try to retrive instead
 			commitToLS(-1);
-			drawCalendar();
+			if (tmp_calendar.length > 0) {
+				// If retrive succeded, open calendar
+				drawCalendar();
+			} else {
+				// Else try to pull the calendar
+				pull(true);
+			}
 		}
 		// Settings
 		if (settng === -1 && localStorage.getItem('bigIcons') != null) {
@@ -576,6 +582,7 @@ function loadData(username = false, email = false, course = false, privacy = fal
 */
 function checkStatus(status) {
 	$('#pull').removeClass('disabled');
+	$('#alert-error').html('');
 	switch (status) {
 		case 200:
 			$('#alert-loading').hide();
