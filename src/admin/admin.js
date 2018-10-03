@@ -4,7 +4,7 @@ var admin = {
 	'hash': window.location.hash.slice(1),
 	'username': 'Admin',
 	'email': 'admin@localhost',
-	'courses': ''
+	'courses': []
 }
 
 var courses = []; // 'CPSC110', 'CPSC121', ...
@@ -101,12 +101,13 @@ function checkStatus(status) {
 }
 
 /*
-* request(action, data, successFn) - is an ajax request
+* request(action, data, successFn, tryAgain) - is an ajax request
 * @var action is the action to take
 * @var data is the data to send (without auth)
 * @successFn is the callback function
+* @var tryAgain (optional) is the amount of seconds before retrying the request (false is disabled)
 */
-function request(action, data, successFn) {
+function request(action, data, successFn, tryAgain = false) {
 	data['auth'] = admin['hash'];
 	$.ajax({
 		url: 'http://localhost:8080/api/admin/' + action,
@@ -119,8 +120,33 @@ function request(action, data, successFn) {
 		},
 		error: function(jqXHR,textStatus) {
 			checkStatus(jqXHR['status']);
+			if (tryAgain !== false) {
+				setTimeout(function () {
+					request(action, data, successFn, tryAgain);
+				}, tryAgain * 1000);
+			}
 		}
 	});
+}
+
+/*
+* apiGet() - Gets all the data for this admin and shows it
+*/
+function apiGet() {
+	request('get', {}, function(data) {
+		admin['username'] = data['name'];
+		admin['email'] = data['email'];
+		admin['courses'] = data['courses'];
+		$('.username').html(admin['username']);
+		$('#username').val(admin['username']);
+		$('.email').html(admin['email']);
+		$('#email').val(admin['email']);
+		let courses = '';
+		for (var i = 0; i < admin['courses'].length; i++) {
+			courses = '<option value="' + admin['courses'][i] + '">' + admin['courses'][i] + '</option>';
+		}
+		$('#courselist').html(courses);
+	}, 5);
 }
 
 $().ready(function () {
@@ -137,4 +163,6 @@ $().ready(function () {
 			$('#mouseMsg').offset(cpos).html(dynamic['mouseMsg']);
 		}
 	});
+	// Get courses list
+	apiGet();
 });
