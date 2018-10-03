@@ -115,15 +115,16 @@ function apiTaSetCalendar(hash, calendar, callbackFn) {
 function apiTaSetAcct(hash, data, callbackFn) {
 	let reqUsername = (data['username']).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
 	let reqEmail = (data['email']).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
+	let reqPrivacy = data['privacy'];
 	if ((String(reqUsername) < 2 || String(reqUsername) > 40) || 
 		(String(reqEmail) < 5 || String(reqEmail) > 200) ||
-		(req.body.privacy !== 0 && req.body.privacy !== 1 && req.body.privacy !== 2)) {
+		(reqPrivacy !== 0 && reqPrivacy !== 1 && reqPrivacy !== 2)) {
 		console.log('API / ta.update / Failed check');
 		callbackFn(400);
 		return false;
 	}
 	db_ta.updateOne({ 'auth': String(hash) },
-		{$set: { name: String(reqUsername), email: String(reqEmail), privacy: req.body.privacy }},
+		{$set: { name: String(reqUsername), email: String(reqEmail), privacy: reqPrivacy }},
 		function(err, result) {
 			if (err) {
 				callbackFn(500);
@@ -195,6 +196,48 @@ function apiTaResetAuth(hash, callbackFn) {
 		});
 }
 
+function apiAdminAuth(hash, callbackFn) {
+	db_admin.find({ 'auth': String(hash) }).toArray(function(err, result) {
+			if (err) {
+				callbackFn(500);
+				throw err;
+			}
+			if (result.length) {
+				callbackFn(true);
+			} else {
+				callbackFn(false);
+			}
+		});
+}
+
+function apiAdminTaAdd(hashTA, callbackFn) {
+	// TODO
+}
+
+function apiAdminCourseAdd(courseName, callbackFn) {
+	// TODO
+}
+
+function apiAdminCourseRemove(courseName, callbackFn) {
+	// TODO
+}
+
+function apiAdminItemAdd(course, data, callbackFn) {
+	// TODO
+	// data = 'name', 'type', 'room', 'needed', 'day', 'from', 'to'
+}
+
+function apiAdminItemEdit(course, data, callbackFn) {
+	// TODO
+	// data = 'name' -> 'type', 'room', 'needed', 'day', 'from', 'to'
+}
+
+function apiAdminItemRemove(course, name, callbackFn) {
+	// TODO
+}
+
+
+
 
 // Making public functions available
 module.exports = {
@@ -241,7 +284,7 @@ module.exports = {
 		},
 		// Updates user info
 		update: function (req, res) {
-			apiTaSetAcct(req.body.auth, {'username': req.body.username, 'email': req.body.email}, function(code) {
+			apiTaSetAcct(req.body.auth, {'username': req.body.username, 'email': req.body.email, 'privacy': req.body.privacy }, function(code) {
 				autoCallback(res, code);
 			});
 		},
@@ -266,8 +309,23 @@ module.exports = {
 	admin: {
 		// Authenticate user
 		auth: function (req, res, callbackFn) {
-			// TODO
-			callbackFn(false);
-		}
+			apiAdminAuth(req.body.auth, callbackFn);
+		},
+		// Creates a new ta
+		taAdd: function (req, res) {
+			// body...
+		},
+		// Removes a ta
+		taRemove: function (req, res) {
+			// body...
+		},
+		// Removes a ta
+		taGet: function (req, res) {
+			// body...
+		},
+		// Password resets a ta
+		taPasswordReset: function (req, res) {
+			// body...
+		},
 	}
 }
