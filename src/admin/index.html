@@ -24,7 +24,15 @@
 						</button>
 					</div>
 					<div class="modal-body">
-
+						<p class="text-danger">General</p>
+						<form onsubmit="event.preventDefault(); apiEditItem(); $('#account').modal('hide');">
+							<div class="input-group input-group-sm mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Name</span>
+								</div>
+								<input type="text" id="name" value="Admin" class="form-control" minlength="5" maxlength="200" autocomplete="off">
+							</div>
+						</form>
 					</div>
 					<div class="modal-body">
 						<p class="text-danger">Danger Zone!</p>
@@ -129,7 +137,7 @@
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="courselist">Courses</label>
 						</div>
-						<select class="custom-select" id="courselist">
+						<select id="courseList" class="custom-select" onchange="getSelectedCourse();">
 						</select>
 					</div>
 					<p>
@@ -139,7 +147,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">Course Code</span>
 						</div>
-						<input type="text" class="form-control" id="courseName" placeholder="CPSC000">
+						<input type="text" class="form-control" id="courseName" placeholder="CPSC000" minlength="4" maxlength="10">
 						<div class="input-group-append">
 							<button class="btn btn-sm btn-outline-secondary" onclick="apiCourseAdd()" type="button">Add</button>
 						</div>
@@ -150,7 +158,7 @@
 				</div>
 				<div class="tab-pane fade" id="edit" role="tabpanel" >
 					<h5>Sections</h5>
-					<div class="list-group">
+					<div id="sectionsList" class="list-group">
 						<li data-item="101" data-toggle="modal" data-target="#itemMenu" class="item list-group-item-success list-group-item d-flex justify-content-between align-items-center">
 							101 (Monday at 9:00)
 							<span class="badge badge-primary badge-pill">5/3</span>
@@ -176,13 +184,13 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">Item Code</span>
 						</div>
-						<input type="text" class="form-control" placeholder="101, L1A, MTG, GRM">
+						<input type="text" oninput="typeOfItem();" id="newItem" class="form-control" placeholder="101, L1A, MTG, GRM">
 						<div class="input-group-append">
 							<button class="btn btn-sm btn-outline-secondary" onclick="addItem()" type="button">Add</button>
 						</div>
 					</div>
 					<p>
-						<small>You're adding a <span id="itemType">...</span></small>
+						<small>You're adding a <b id="itemType">...</b></small>
 					</p>
 				</div>
 				<div class="tab-pane fade" id="tas" role="tabpanel" >
