@@ -128,6 +128,15 @@ function typeOfItem(name = -1) {
 }
 
 /*
+* resetPassword() - Resets the user password
+*/
+function resetPassword() {
+	if (confirm('This will log you out, are you sure?')) {
+		resetauth();
+	}
+}
+
+/*
 * checkStatus(status) - checks the request status and takes actions accordingly
 * @var status the return status code for the request (or 0 for failed)
 * @return true if everything fine, false on abort
@@ -146,11 +155,11 @@ function checkStatus(status) {
 			return false;
 		case 401:
 			// Authentication error
-			window.location.replace('login/#wp');
+			window.location.replace('../login/#wp');
 			return false;
 		case 403:
 			// Brute Force error
-			window.location.replace('login/#bf');
+			window.location.replace('../login/#bf');
 			return false;
 		case 500:
 			// Server error
@@ -234,7 +243,7 @@ function resetauth() {
 		if (dynamic['hasLocalStorage']) {
 			localStorage.clear();
 		}
-		window.location.replace('login/');
+		window.location.replace('../login/');
 	});
 }
 
@@ -276,7 +285,7 @@ $().ready(function () {
 			if (localStorage.getItem('hash') != null) {
 				admin['hash'] = localStorage.getItem('hash');
 			} else {
-				window.location.replace('login/');
+				window.location.replace('../login/');
 			}
 		}
 	}
