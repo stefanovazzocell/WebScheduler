@@ -41,7 +41,7 @@ function sendNext() {
 		setTimeout(sendNext, cd_checkagain);
 	} else {
 		let thisEmail = emailQueue[0];
-		emailQueue = emailQueue.shift();
+		emailQueue.shift();
 		let sendfrom = thisEmail['sendfrom'];
 		let sendto = thisEmail['sendto'];
 		let subject = thisEmail['subject'];
