@@ -156,6 +156,9 @@ app.post('/api/admin/*', function (req, res) {
 				case 'get':
 					api.admin.get(req, res);
 					break;
+				case 'courseAdd':
+					api.admin.courseAdd(req, res);
+					break;
 				default:
 					gatekeeper.count(req);
 					res.status(400);
