@@ -5,17 +5,24 @@ var admin = {
 	'username': 'Admin',
 	'email': 'admin@localhost',
 	'courses': []
-}
+};
 
 var courses = []; // 'CPSC110', 'CPSC121', ...
 var coursesData = []; // 'CPSC110': {...}, ...
 var coursesTa = []; // 'CPSC110': [{...}, ...] ...
 var coursesSchedule = [] // 'CPSC110': [{...}, ...] ...
 
+var selected = {
+	'course': null, // 'CPSC110'
+	'item': null,   // { 'name': 'L1A', 'course': 'CPSC110' }
+	'ta': null,     // '_id_'
+};
+
 var dynamic = {
 	'mouseMsg': false,
 	'mouseMsgTimeout': false,
 	'isTouch': false,
+	'hasLocalStorage': (typeof(Storage) !== "undefined"),
 	'bigIcons': false
 };
 
@@ -23,7 +30,7 @@ var dynamic = {
 var settings = {
 	'days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
 	'fromto': [8, 21]
-}
+};
 
 /*
 * toggleTouch() - Toggles touch mode on and off
@@ -55,6 +62,69 @@ function addMouseMsg(message) {
 function resetMouseMsg() {
 	dynamic['mouseMsg'] = false;
 	$('#mouseMsg').html('');
+}
+
+/*
+* getSelectedCourse() - Gets the selected course
+*/
+function getSelectedCourse() {
+	let value = $('#courseList').val();
+	console.log('course: ' + value);
+	if (value === '') {
+		selected['course'] = null;
+	} else {
+		selected['course'] = value;
+	}
+	selected['item'] = null;
+	selected['ta'] = null;
+}
+
+/*
+* typeOfItem(name) - given an item with a name, it guesses the type
+* @var name (optional) is the name of the item, if not defined it will update on the screen
+* @returns the type of the item
+*/
+function typeOfItem(name = -1) {
+	let onScreen = false;
+	if (name === -1) {
+		onScreen = true;
+		name = $('#newItem').val();
+	}
+	let itemIs = 'special';
+	switch (name.charAt(0).toUpperCase()) {
+		case '':
+			itemIs = '...';
+			break;
+		case 'L':
+			itemIs = 'lab';
+			break;
+		case 'M':
+			itemIs = 'meeting';
+			break;
+		case 'O':
+		case 'D':
+			itemIs = 'office hours';
+			break;
+		case 'G':
+			itemIs = 'grading meeting';
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			itemIs = 'lecture';
+			break;
+	}
+	if (onScreen) {
+		$('#itemType').html(itemIs)
+	}
+	return itemIs;
 }
 
 /*
@@ -135,6 +205,7 @@ function request(action, data, successFn, tryAgain = false) {
 function apiGet() {
 	request('get', {}, function(data) {
 		$('#alert-loading').hide();
+		let changed = (admin['courses'].length != data['courses'].length);
 		admin['username'] = data['username'];
 		admin['email'] = data['email'];
 		admin['courses'] = data['courses'];
@@ -142,12 +213,29 @@ function apiGet() {
 		$('#name').val(admin['username']);
 		$('.email').html(admin['email']);
 		$('#email').val(admin['email']);
-		let courses = '';
-		for (var i = 0; i < admin['courses'].length; i++) {
-			courses = '<option value="' + admin['courses'][i] + '">' + admin['courses'][i] + '</option>';
+		if (changed) {
+			let courses = '';
+			for (var i = 0; i < admin['courses'].length; i++) {
+				courses += '<option value="' + admin['courses'][i] + '">' + admin['courses'][i] + '</option>';
+			}
+			$('#courseList').html(courses);
+			let index = admin['courses'].indexOf(selected['course']);
+			getSelectedCourse();
 		}
-		$('#courselist').html(courses);
 	}, 5);
+}
+
+/*
+* resetauth() - Resets the authentication hash
+*/
+function resetauth() {
+	request('resetauth', {}, function() {
+		alert('Done, check your emails');
+		if (dynamic['hasLocalStorage']) {
+			localStorage.clear();
+		}
+		window.location.replace('login/');
+	});
 }
 
 /*
@@ -165,7 +253,7 @@ function apiCourseAdd(courseName = '') {
 		apiGet();
 	});
 }
-
+var test;
 $().ready(function () {
 	// Once page ready
 	// Detect if touch enabled
@@ -180,6 +268,27 @@ $().ready(function () {
 			$('#mouseMsg').offset(cpos).html(dynamic['mouseMsg']);
 		}
 	});
+	// Store or retrive id
+	if (dynamic['hasLocalStorage']) {
+		if (admin['hash'] !== '') {
+			localStorage.setItem('hash', admin['hash']);
+		} else {
+			if (localStorage.getItem('hash') != null) {
+				admin['hash'] = localStorage.getItem('hash');
+			} else {
+				window.location.replace('login/');
+			}
+		}
+	}
 	// Get courses list
 	apiGet();
+	// Handle clicks
+	$('#sectionsList > li').click(function (data) {
+		let item = $(data.target).attr('data-item');
+		$('.selectedItem').html(item);
+		selected['item'] = {
+			'course': selected['course'],
+			'item': item
+		};
+	});
 });
