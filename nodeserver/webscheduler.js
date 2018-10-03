@@ -156,6 +156,9 @@ app.post('/api/admin/*', function (req, res) {
 				case 'get':
 					api.admin.get(req, res);
 					break;
+				case 'resetauth':
+					api.admin.resetauth(req, res);
+					break;
 				case 'courseAdd':
 					api.admin.courseAdd(req, res);
 					break;
