@@ -457,7 +457,7 @@ module.exports = {
 					res.status(500);
 					res.send();
 				} else {
-					let toReturn = { 'hash': result['hash'], 'username': result['name'], 'email': result['email'], 'course': result['course'], 'privacy': result['privacy'],  'calendar': result['calendar'], 'schedule': result['schedule']};
+					let toReturn = { '_id': result['_id'], 'hash': result['hash'], 'username': result['name'], 'email': result['email'], 'course': result['course'], 'privacy': result['privacy'],  'calendar': result['calendar'], 'schedule': result['schedule']};
 					res.send(toReturn);
 				}
 			});
