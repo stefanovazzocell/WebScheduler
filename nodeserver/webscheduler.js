@@ -153,14 +153,15 @@ app.post('/api/admin/*', function (req, res) {
 	if (gatekeeper.check(req, res)) {
 		authenticate(req, res, function() {
 			switch (req.params[0]) {
-				case 'pull':
+				case 'get':
+					api.admin.get(req, res);
 					break;
 				default:
 					gatekeeper.count(req);
 					res.status(400);
 					res.send();
 			}
-		});
+		}, true);
 	}
 });
 

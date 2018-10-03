@@ -388,7 +388,7 @@ module.exports = {
 		},
 		// Add a course
 		get: function(req, res) {
-			apiAdminGet(req.body.hash, function (result) {
+			apiAdminGet(req.body.auth, function (result) {
 				if (result === false) {
 					res.status(500);
 					res.send();
