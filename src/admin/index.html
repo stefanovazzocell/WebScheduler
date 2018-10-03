@@ -12,7 +12,7 @@
 		<nav class="navbar navbar-dark bg-dark">
 			<span class="navbar-brand" style="font-size: 110%;">Scheduler</span>
 			<span class="navbar-text message" onclick="uiMessage();" style="color: #fff;"></span>
-			<button class="btn btn-outline-light" data-toggle="modal" data-target="#account">My Account</button>
+			<button class="btn btn-sm btn-outline-light btn-only-sm" data-toggle="modal" data-target="#account">My Account</button>
 		</nav>
 		<div class="modal fade" id="itemMenu" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
@@ -28,12 +28,12 @@
 					</div>
 					<div class="modal-body">
 						<p class="text-danger">Danger Zone!</p>
-						<div class="btn-group" role="group">
-							<button type="button" class="btn btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete</button>
+						<div class="btn-group btn-group-sm" role="group">
+							<button type="button" class="btn btn-sm btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete</button>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
@@ -49,38 +49,38 @@
 					</div>
 					<div class="modal-body">
 						<p class="text-danger">General</p>
-						<div class="btn-group" role="group">
-							<button type="button" class="btn btn-dark" onclick="logout();">Logout</button>
+						<div class="btn-group btn-group-sm" role="group">
+							<button type="button" class="btn btn-sm btn-dark" onclick="logout();">Logout</button>
 						</div>
 					</div>
 					<hr>
 					<div class="modal-body">
 						<p class="text-primary">Account</p>
 						<form onsubmit="event.preventDefault(); update(); $('#account').modal('hide');">
-							<div class="input-group mb-3">
+							<div class="input-group input-group-sm mb-3">
 								<div class="input-group-prepend">
 									<span class="input-group-text">Name</span>
 								</div>
 								<input type="text" id="name" class="form-control" minlength="5" maxlength="200" autocomplete="off">
 							</div>
-							<div class="input-group mb-3">
+							<div class="input-group input-group-sm mb-3">
 								<div class="input-group-prepend">
 									<span class="input-group-text">Email</span>
 								</div>
 								<input type="email" id="email"class="form-control" minlength="5" maxlength="40" autocomplete="off">
 							</div>
-							<input type="submit" class="btn btn-primary" value="Update"></input>
+							<input type="submit" class="btn btn-sm btn-primary" value="Update"></input>
 						</form>
 					</div>
 					<hr>
 					<div class="modal-body">
 						<p class="text-danger">Danger Zone!</p>
-						<div class="btn-group" role="group">
-							<button type="button" class="btn btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
+						<div class="btn-group btn-group-sm" role="group">
+							<button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
@@ -125,7 +125,7 @@
 					<p>
 						Select a course
 					</p>
-					<div class="input-group mb-3">
+					<div class="input-group input-group-sm mb-3">
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="courselist">Courses</label>
 						</div>
@@ -138,13 +138,13 @@
 					<p>
 						Create a new course
 					</p>
-					<div class="input-group mb-3">
+					<div class="input-group input-group-sm mb-3">
 						<div class="input-group-prepend">
 							<span class="input-group-text">Course Code</span>
 						</div>
 						<input type="text" class="form-control" placeholder="CPSC000">
 						<div class="input-group-append">
-							<button class="btn btn-outline-secondary" onclick="addCourse()" type="button">Add</button>
+							<button class="btn btn-sm btn-outline-secondary" onclick="addCourse()" type="button">Add</button>
 						</div>
 					</div>
 					<p>
@@ -175,13 +175,13 @@
 					<p>
 						Lectures (101), Labs (L1A), Meetings (MTG/MT1), Grading (G01/GM1/GMT), Office hours (OH1/O01/DLC/D01)
 					</p>
-					<div class="input-group mb-3">
+					<div class="input-group input-group-sm mb-3">
 						<div class="input-group-prepend">
 							<span class="input-group-text">Item Code</span>
 						</div>
 						<input type="text" class="form-control" placeholder="101, L1A, MTG, GRM">
 						<div class="input-group-append">
-							<button class="btn btn-outline-secondary" onclick="addItem()" type="button">Add</button>
+							<button class="btn btn-sm btn-outline-secondary" onclick="addItem()" type="button">Add</button>
 						</div>
 					</div>
 					<p>
@@ -206,7 +206,7 @@
 			<span class="navbar-text">
 				🙂
 			</span>
-			<a href="https://github.com/stefanovazzocell/WebScheduler" target="_blank" class="btn btn-outline-light btn-sm">GitHub</a>
+			<a href="https://github.com/stefanovazzocell/WebScheduler" target="_blank" class="btn btn-sm btn-outline-light btn-only-sm">GitHub</a>
 		</nav>
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
