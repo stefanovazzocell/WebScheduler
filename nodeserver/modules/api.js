@@ -18,6 +18,7 @@ const crypto = require('crypto');
 
 var db;
 var settings;
+var calendarLength;
 var sendEmail; // sendEmail(sendfrom, sendto, subject, message, callbackFn)
 var db_ta, db_admin, db_course;
 
@@ -149,8 +150,8 @@ function apiTaDelete(hash, callbackFn) {
 		});
 }
 
-function apiTaResetAuth(hash, callbackFn) {
-	db_ta.find({ 'auth': String(hash) }).toArray(function(erra, resulta) {
+function apiResetAuth(hash, callbackFn, _db) {
+	_db.find({ 'auth': String(hash) }).toArray(function(erra, resulta) {
 			if (erra) {
 				callbackFn(500);
 				throw erra;
@@ -158,7 +159,7 @@ function apiTaResetAuth(hash, callbackFn) {
 			if (resulta.length) {
 				resulta = resulta[0];
 				let newHash = genAuth();
-				db_ta.find({ 'auth': newHash }).toArray(function (errb, resultb) {
+				_db.find({ 'auth': newHash }).toArray(function (errb, resultb) {
 					if (erra) {
 						callbackFn(500);
 						throw erra;
@@ -168,7 +169,7 @@ function apiTaResetAuth(hash, callbackFn) {
 						console.log('Generation of new ID has conflict, trying again');
 						apiTaResetAuth(hash, callbackFn);
 					} else {
-						db_ta.updateOne({ 'auth': String(hash) },
+						_db.updateOne({ 'auth': String(hash) },
 						{$set: { auth: newHash }},
 						function(errc, resultc) {
 							if (errc) {
@@ -177,11 +178,12 @@ function apiTaResetAuth(hash, callbackFn) {
 							}
 							if (resultc) {
 								console.log('New hash: ' + newHash);
-								let message = 'Hello, ' + resulta['name'] + '<br>'
-								message += 'Your authentication code has been reset.<br>';
-								message += 'The new code is <a href=":domain:/#' + newHash + '">' + newHash + '</a>.<br>';
-								message += 'Have a great day!';
-								sendEmail('', resulta['email'], 'Password Reset', message, function () {
+								let message = 'Hi, ' + resulta['name'] + '!<br>';
+								message += 'Your access code for the scheduler 📅 is <a href=":domain:/#' + newHash + '">' + newHash + '</a>.<br>';
+								message += 'You can either click on the link above or simply copy the code into the scheduler to login.<br><br>';
+								message += 'Have a great day,';
+								message += 'A ' + resulta['course'] + ' robot 🤖';
+								sendEmail(resulta['course'], resulta['email'], resulta['course'] + ' Scheduler Password', message, function () {
 									callbackFn(0);
 								});
 							} else {
@@ -192,6 +194,41 @@ function apiTaResetAuth(hash, callbackFn) {
 				});
 			} else {
 				callbackFn(500);
+			}
+		});
+}
+
+function apiTaResetAuth(hash, callbackFn) {
+	apiResetAuth(hash, callbackFn, db_ta);
+}
+
+function apiTaAdd(hash, data, sendEmail, callbackFn) {
+	// data = 'name', 'course', 'email'
+	let calendar = [];
+	for (let i = 0; i < calendarLength; i++) {
+		calendar.push(2);
+	}
+	var newTa = {
+		'_id': (data['course'] + '#' + data['email']),
+		'name': data['name'],
+		'course': data['course'],
+		'email': data['email'],
+		'auth': (genAuth() + '_new'),
+		'privacy': 1,
+		'calendar': calendar,
+		'schedule': {},
+		'lastPush': 0
+	};
+	db_ta.insertOne(newTa).toArray(function(err, result) {
+			if (err) {
+				callbackFn(500);
+				throw err;
+			} else {
+				if (sendEmail) {
+					apiResetAuth(hash, callbackFn, db_ta);
+				} else {
+					callbackFn(0);
+				}
 			}
 		});
 }
@@ -210,12 +247,19 @@ function apiAdminAuth(hash, callbackFn) {
 		});
 }
 
-function apiAdminTaAdd(hashTA, callbackFn) {
-	// TODO
-}
-
 function apiAdminCourseAdd(courseName, callbackFn) {
-	// TODO
+	var newCourse = {
+		'_id': courseName,
+		'items': []
+	};
+	db_course.insertOne(newCourse).toArray(function(err, result) {
+			if (err) {
+				callbackFn(500);
+				throw err;
+			} else {
+				callbackFn(0);
+			}
+		});
 }
 
 function apiAdminCourseRemove(courseName, callbackFn) {
@@ -236,8 +280,24 @@ function apiAdminItemRemove(course, name, callbackFn) {
 	// TODO
 }
 
+function apiAdminNew(name, callbackFn) {
+	// TODO
+}
 
+function apiAdminDelete(hash, callbackFn) {
+	db_admin.deleteOne({ 'auth': String(hash) },
+		function (err, obj) {
+			if (err) {
+				callbackFn(500);
+				throw err;
+			}
+			callbackFn(0);
+		});
+}
 
+function apiAdminResetAuth(hash, callbackFn) {
+	apiResetAuth(hash, callbackFn, db_admin);
+}
 
 // Making public functions available
 module.exports = {
@@ -246,6 +306,7 @@ module.exports = {
 	*/
 	setup: function (dburl, mClient, mailerFn, givenSettings, callback) {
 		settings = givenSettings;
+		calendarLength = (settings['fromto'][0] - settings['fromto'][0]) * 7 * 2;
 		sendEmail = mailerFn;
 		mClient.connect(dburl, { useNewUrlParser: true }, (err, client) => {
 			if (err) {
@@ -313,19 +374,41 @@ module.exports = {
 		},
 		// Creates a new ta
 		taAdd: function (req, res) {
-			// body...
+			let sendEmail = true;
+			if (req.body.sendEmail === false) {
+				sendEmail = false;
+			}
+			apiTaAdd(req.body.hash, {
+				'name': String(req.body.taName),
+				'course': String(req.body.taCourse),
+				'email': String(req.body.taEmail)
+			}, sendEmail, function (code) {
+				autoCallback(res, code);
+			});
 		},
 		// Removes a ta
 		taRemove: function (req, res) {
-			// body...
+			apiTaDelete(req.body.taHash, function (code) {
+				autoCallback(res, code);
+			});
 		},
-		// Removes a ta
+		// Gets a ta
 		taGet: function (req, res) {
-			// body...
+			apiTaGet(req.body.taAuth, function(result) {
+				if (result === false) {
+					res.status(500);
+					res.send();
+				} else {
+					let toReturn = { 'hash': result['hash'], 'username': result['name'], 'email': result['email'], 'course': result['course'], 'privacy': result['privacy'],  'calendar': result['calendar'], 'schedule': result['schedule']};
+					res.send(toReturn);
+				}
+			});
 		},
 		// Password resets a ta
 		taPasswordReset: function (req, res) {
-			// body...
+			apiTaResetAuth(req.body.taAuth, function (code) {
+				autoCallback(res, code);
+			});
 		},
 	}
 }
