@@ -219,7 +219,7 @@ function apiTaAdd(data, sendEmail, callbackFn) {
 		'schedule': {},
 		'lastPush': 0
 	};
-	db_ta.insertOne(newTa).toArray(function(err, result) {
+	db_ta.insertOne(newTa, function(err, result) {
 			if (err) {
 				callbackFn(500);
 				throw err;
@@ -247,17 +247,29 @@ function apiAdminAuth(hash, callbackFn) {
 		});
 }
 
-function apiAdminCourseAdd(courseName, callbackFn) {
+function apiAdminCourseAdd(hash, courseName, callbackFn) {
 	var newCourse = {
 		'_id': courseName,
 		'items': []
 	};
-	db_course.insertOne(newCourse).toArray(function(err, result) {
+	db_course.insertOne(newCourse, function(err, result) {
 			if (err) {
 				callbackFn(500);
 				throw err;
 			} else {
-				callbackFn(0);
+				db_admin.updateOne({ 'auth': String(hash) },
+					{$push: { courses: courseName }},
+					function(err, result) {
+						if (err) {
+							callbackFn(500);
+							throw err;
+						}
+						if (result) {
+							callbackFn(0);
+						} else {
+							callbackFn(500);
+						}
+					});
 			}
 		});
 }
@@ -410,7 +422,9 @@ module.exports = {
 		},
 		// Add a course
 		courseAdd: function(req, res) {
-			//
+			apiAdminCourseAdd(req.body.auth, req.body.courseName, function(code) {
+				autoCallback(res, code);
+			});
 		},
 		// Remove a course
 		courseRemove: function(req, res) {
