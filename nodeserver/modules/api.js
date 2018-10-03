@@ -59,7 +59,7 @@ function autoCallback(res, code) {
 function apiTaAuth(hash, callbackFn) {
 	db_ta.find({ 'auth': String(hash) }).toArray(function(err, result) {
 			if (err) {
-				callbackFn(500);
+				callbackFn(false);
 				throw err;
 			}
 			if (result.length) {
@@ -73,7 +73,7 @@ function apiTaAuth(hash, callbackFn) {
 function apiTaGet(hash, callbackFn) {
 	db_ta.find({ 'auth': String(hash) }).toArray(function(err, result) {
 			if (err) {
-				callbackFn(500);
+				callbackFn(false);
 				throw err;
 			}
 			if (result.length) {
@@ -202,7 +202,7 @@ function apiTaResetAuth(hash, callbackFn) {
 	apiResetAuth(hash, callbackFn, db_ta);
 }
 
-function apiTaAdd(hash, data, sendEmail, callbackFn) {
+function apiTaAdd(data, sendEmail, callbackFn) {
 	// data = 'name', 'course', 'email'
 	let calendar = [];
 	for (let i = 0; i < calendarLength; i++) {
@@ -299,6 +299,20 @@ function apiAdminResetAuth(hash, callbackFn) {
 	apiResetAuth(hash, callbackFn, db_admin);
 }
 
+function apiAdminGet(hash, callbackFn) {
+	db_admin.find({ 'auth': String(hash) }).toArray(function(err, result) {
+			if (err) {
+				callbackFn(false);
+				throw err;
+			}
+			if (result.length) {
+				callbackFn(result[0]);
+			} else {
+				callbackFn(false);
+			}
+		});
+}
+
 // Making public functions available
 module.exports = {
 	/*
@@ -368,9 +382,39 @@ module.exports = {
 		}
 	},
 	admin: {
-		// Authenticate user
+		// Authenticate admin
 		auth: function (req, res, callbackFn) {
 			apiAdminAuth(req.body.auth, callbackFn);
+		},
+		// Add a course
+		get: function(req, res) {
+			apiAdminGet(hash, function (result) {
+				if (result === false) {
+					res.status(500);
+					res.send();
+				} else {
+					let toReturn = { 'username': result['name'], 'email': result['email'], 'courses': result['courses'] };
+					res.send(toReturn);
+				}
+			});
+		},
+		// Resets auth
+		resetauth: function (req, res) {
+			apiAdminResetAuth(req.body.auth, function (code) {
+				autoCallback(res, code);
+			});
+		},
+		deleteme: function (req, res) {
+			// Not Allowed
+			autoCallback(res, 400);
+		},
+		// Add a course
+		courseAdd: function(req, res) {
+			//
+		},
+		// Remove a course
+		courseRemove: function(req, res) {
+			//
 		},
 		// Creates a new ta
 		taAdd: function (req, res) {
@@ -378,7 +422,7 @@ module.exports = {
 			if (req.body.sendEmail === false) {
 				sendEmail = false;
 			}
-			apiTaAdd(req.body.hash, {
+			apiTaAdd({
 				'name': String(req.body.taName),
 				'course': String(req.body.taCourse),
 				'email': String(req.body.taEmail)
@@ -405,7 +449,7 @@ module.exports = {
 			});
 		},
 		// Password resets a ta
-		taPasswordReset: function (req, res) {
+		taResetAuth: function (req, res) {
 			apiTaResetAuth(req.body.taAuth, function (code) {
 				autoCallback(res, code);
 			});
