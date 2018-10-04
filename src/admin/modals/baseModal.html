@@ -1,0 +1,44 @@
+<div class="modal fade" id="TODO:ID" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title selectedItem">TODO:ACTION</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<span>&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>
+					TODO:EXPLANATION
+				</p>
+				<form onsubmit="event.preventDefault(); ask(); $('#TODO:ID').modal('hide');">
+					<div class="form-group">
+						<label for="TODO:VARIABLE">TODO</label>
+						<input type="text" id="TODO:VARIABLE" placeholder="TODO:PH" class="form-control" minlength="TODO" maxlength="TODO" autocomplete="off">
+					</div>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	/*
+	* ask() - Function open the TODO modal
+	*/
+	function fn() {
+		$('#TODO:ID').modal('show');
+	}
+	/*
+	* api() - Function to request TODO
+	*/
+	function api() {
+		request(action, data, successFn, tryAgain = false) {
+			//
+		}
+	}
+</script>
