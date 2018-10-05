@@ -50,6 +50,33 @@ URL: `\api\ta\{action}\`
 | resetauth | Resets the auth hash for the ta, a new one will be sent via email |   |   |
 | getsubs | Gets all the subs for all courses (where this ta is registered in) |   | `{{subs*}}` |
 
+### Admin
+
+URL: `\api\admin\{action}\`
+
+| ACTION | Meaning | Extra DATA | Response |
+| ------ | ------- | ---------- | -------- |
+| get    | Gets the admin data | |  `'username': 'Name Surname', 'email': 'admin@localhost', 'courses': []` |
+| resetauth | Resets the auth hash for the ta, a new one will be sent via email |   |   |
+| courseAdd | Adds a new course | 
+| courseRemove | Removes a course | 
+| taAdd | Adds a ta | 
+| taRemove | Removes a ta | 
+| taGet | Gets the data from a ta | 
+| taResetAuth | Resets a ta auth |
+| taSetSchedule | Sets a schedule for a given TA | 
+| 
+| 
+
+| ta   | Get data |   | `{"username": "{username}", "email": "{email}", "course": "{course}", "privacy": {privacy}, "calendar": [{calendar}], "schedule": {{schedule}}]` |
+| push   | Get data | `"calendar": [{calendar}]` |   |
+| update | Updates the user info | `{"username": "{username}", "email": "{email}", "privacy": {privacy}`  |   |
+| deleteme | Deletes the current ta from the system |   |   |
+| resetauth | Resets the auth hash for the ta, a new one will be sent via email |   |   |
+| getsubs | Gets all the subs for all courses (where this ta is registered in) |   | `{{subs*}}` |
+
+### General
+
 TYPE: `POST`
 
 DATA: `{"auth": "{authentication hash}", ...}`
@@ -113,6 +140,16 @@ URL: `\api\admin\{action}\`
 }
 ```
 
+A new admin will look like
+
+```json
+{
+	"name": "Name Surname",
+	"email": "admin@localhost",
+	"auth": "secret",
+	"courses": []
+}
+```
 
 **course**
 
