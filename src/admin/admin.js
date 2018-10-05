@@ -262,7 +262,23 @@ function apiCourseAdd(courseName = '') {
 		apiGet();
 	});
 }
-var test;
+
+/*
+* apiCourseAdd(courseName) - Adds a course
+* @var courseName (optional) is the course name to use
+*/
+function apiCourseAdd(courseName = '') {
+	if (courseName === '') {
+		courseName = $('#courseName').val();
+	}
+	request('courseAdd', { 'courseName': courseName }, function(data) {
+		if (courseName === $('#courseName').val()) {
+			$('#courseName').val('');
+		}
+		apiGet();
+	});
+}
+
 $().ready(function () {
 	// Once page ready
 	// Detect if touch enabled

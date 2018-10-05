@@ -147,13 +147,17 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">Course Code</span>
 						</div>
-						<input type="text" class="form-control" id="courseName" placeholder="CPSC000" minlength="4" maxlength="10">
+						<input type="text" class="form-control" id="courseName" placeholder="CPSC000-1W19" minlength="4" maxlength="10">
 						<div class="input-group-append">
 							<button class="btn btn-sm btn-outline-secondary" onclick="apiCourseAdd()" type="button">Add</button>
 						</div>
 					</div>
+					<p class="text-danger">
+						Delete a course
+					</p>
 					<p>
-						<small>You can delete a course by selecting it and heading to the 'tools' tab</small>
+						Select course above and then click "Delete" to remove the course from the roaster.<br><br>
+						<button class="btn btn-sm btn-danger" onclick="">Delete</button>
 					</p>
 				</div>
 				<div class="tab-pane fade" id="edit" role="tabpanel" >
