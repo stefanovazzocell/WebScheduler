@@ -7,10 +7,15 @@ var admin = {
 	'courses': []
 };
 
-var courses = []; // 'CPSC110', 'CPSC121', ...
-var coursesData = []; // 'CPSC110': {...}, ...
-var coursesTa = []; // 'CPSC110': [{...}, ...] ...
-var coursesSchedule = [] // 'CPSC110': [{...}, ...] ...
+var courses = [
+	'CPSC110',
+	'CPSC210'
+];
+var courseData = [
+	
+]; // 'CPSC110': {...}, ...
+var courseTa = []; // 'CPSC110': [{...}, ...] ...
+var courseSchedule = [] // 'CPSC110': [{...}, ...] ...
 
 var selected = {
 	'course': null, // 'CPSC110'
@@ -267,16 +272,23 @@ function apiCourseAdd(courseName = '') {
 * apiCourseAdd(courseName) - Adds a course
 * @var courseName (optional) is the course name to use
 */
-function apiCourseAdd(courseName = '') {
+function apiAccountDelete(courseName = '') {
 	if (courseName === '') {
-		courseName = $('#courseName').val();
+		courseName = selected['course'];
 	}
-	request('courseAdd', { 'courseName': courseName }, function(data) {
-		if (courseName === $('#courseName').val()) {
-			$('#courseName').val('');
-		}
-		apiGet();
-	});
+	let check = prompt('You are about to delete a course.' +
+						'To confirm the deletion enter the course name (' +
+						courseName + ') below');
+	if (check === courseName) {
+		request('courseRemove', { 'courseName': courseName }, function(data) {
+			if (courseName === $('#courseName').val()) {
+				$('#courseName').val('');
+			}
+			apiGet();
+		});
+	} else {
+		alert('Deletion cancelled');
+	}
 }
 
 $().ready(function () {

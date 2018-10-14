@@ -274,8 +274,27 @@ function apiAdminCourseAdd(hash, courseName, callbackFn) {
 		});
 }
 
-function apiAdminCourseRemove(courseName, callbackFn) {
-	// TODO
+function apiAdminCourseRemove(hash, courseName, callbackFn) {
+	db_course.deleteOne({ '_id': courseName }, function(err, result) {
+			if (err) {
+				callbackFn(500);
+				throw err;
+			} else {
+				db_admin.updateOne({ 'auth': String(hash) },
+					{$pull: { courses: courseName }},
+					function(err, result) {
+						if (err) {
+							callbackFn(500);
+							throw err;
+						}
+						if (result) {
+							callbackFn(0);
+						} else {
+							callbackFn(500);
+						}
+					});
+			}
+		});
 }
 
 function apiAdminItemAdd(course, data, callbackFn) {
@@ -321,6 +340,20 @@ function apiAdminGet(hash, callbackFn) {
 				callbackFn(result[0]);
 			} else {
 				callbackFn(false);
+			}
+		});
+}
+
+function apiAdminGetCourse(course, callbackFn) {
+	db_course.find({ '_id': String(course) }).toArray(function(err, result) {
+			if (err) {
+				callbackFn(500);
+				throw err;
+			}
+			if (result.length) {
+				callbackFn(result[0]);
+			} else {
+				callbackFn(400);
 			}
 		});
 }
@@ -428,7 +461,9 @@ module.exports = {
 		},
 		// Remove a course
 		courseRemove: function(req, res) {
-			//
+			apiAdminCourseRemove(req.body.auth, req.body.courseName, function(code) {
+				autoCallback(res, code);
+			});
 		},
 		// Creates a new ta
 		taAdd: function (req, res) {
