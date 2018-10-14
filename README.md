@@ -65,15 +65,7 @@ URL: `\api\admin\{action}\`
 | taGet | Gets the data from a ta | 
 | taResetAuth | Resets a ta auth |
 | taSetSchedule | Sets a schedule for a given TA | 
-| 
-| 
 
-| ta   | Get data |   | `{"username": "{username}", "email": "{email}", "course": "{course}", "privacy": {privacy}, "calendar": [{calendar}], "schedule": {{schedule}}]` |
-| push   | Get data | `"calendar": [{calendar}]` |   |
-| update | Updates the user info | `{"username": "{username}", "email": "{email}", "privacy": {privacy}`  |   |
-| deleteme | Deletes the current ta from the system |   |   |
-| resetauth | Resets the auth hash for the ta, a new one will be sent via email |   |   |
-| getsubs | Gets all the subs for all courses (where this ta is registered in) |   | `{{subs*}}` |
 
 ### General
 
