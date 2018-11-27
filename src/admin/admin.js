@@ -12,7 +12,7 @@ var courses = [
 	'CPSC210'
 ];
 var courseData = [
-	
+
 ]; // 'CPSC110': {...}, ...
 var courseTa = []; // 'CPSC110': [{...}, ...] ...
 var courseSchedule = [] // 'CPSC110': [{...}, ...] ...
@@ -96,35 +96,39 @@ function typeOfItem(name = -1) {
 		name = $('#newItem').val();
 	}
 	let itemIs = 'special';
-	switch (name.charAt(0).toUpperCase()) {
-		case '':
-			itemIs = '...';
-			break;
-		case 'L':
-			itemIs = 'lab';
-			break;
-		case 'M':
-			itemIs = 'meeting';
-			break;
-		case 'O':
-		case 'D':
-			itemIs = 'office hours';
-			break;
-		case 'G':
-			itemIs = 'grading meeting';
-			break;
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-			itemIs = 'lecture';
-			break;
+	if (name.indexOf(',') == -1) {
+		switch (name.charAt(0).toUpperCase()) {
+			case '':
+				itemIs = '...';
+				break;
+			case 'L':
+				itemIs = 'lab';
+				break;
+			case 'M':
+				itemIs = 'meeting';
+				break;
+			case 'O':
+			case 'D':
+				itemIs = 'office hours';
+				break;
+			case 'G':
+				itemIs = 'grading meeting';
+				break;
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				itemIs = 'lecture';
+				break;
+		}
+	} else {
+		itemIs = 'collection of items';
 	}
 	if (onScreen) {
 		$('#itemType').html(itemIs)
