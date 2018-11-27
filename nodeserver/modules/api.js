@@ -16,7 +16,6 @@ const crypto = require('crypto');
 * Get Settings
 */
 
-var db;
 var settings;
 var calendarLength;
 var sendEmail; // sendEmail(sendfrom, sendto, subject, message, callbackFn)
@@ -56,61 +55,93 @@ function autoCallback(res, code) {
 	}
 }
 
-function apiTaAuth(hash, callbackFn) {
-	db_ta.find({ 'auth': String(hash) }).toArray(function(err, result) {
-			if (err) {
-				callbackFn(false);
-				throw err;
-			}
-			if (result.length) {
-				callbackFn(true);
-			} else {
-				callbackFn(false);
-			}
-		});
-}
-
-function apiTaGet(hash, callbackFn) {
-	db_ta.find({ 'auth': String(hash) }).toArray(function(err, result) {
-			if (err) {
-				callbackFn(false);
-				throw err;
-			}
-			if (result.length) {
-				callbackFn(result[0]);
-			} else {
-				callbackFn(false);
-			}
-		});
-}
-
-function apiTaSetCalendar(hash, calendar, callbackFn) {
-	if (!((calendar) instanceof Array) || (calendar).length !== ((settings['fromto'][1] - settings['fromto'][0]) * 7 * 2)) {
-		console.log('API / ta.push / Failed check 1');
-		callbackFn(400);
-		return false;
-	}
-	for (let i = 0; i < (calendar).length; i++) {
-		if ((calendar)[i] !== 0 && (calendar)[i] !== 1 && (calendar)[i] !== 2) {
-			console.log('API / ta.push / Failed check 2');
-			callbackFn(400);
-			return false;
+var api = {
+	// Default models
+	_model: {
+		// db has given element (true/false)
+		has: function(db, query, callbackFn) {
+			db.find(query).toArray(function(err, result) {
+				if (err) callbackFn(false);
+				if (result.length) {
+					callbackFn(true);
+				} else {
+					callbackFn(false);
+				}
+			});
+		},
+		// Get all matching the query
+		getMany: function (db, query, callbackFn) {
+			db.find(query).toArray(function(err, result) {
+				if (err) callbackFn(500);
+				callbackFn(result);
+			});
+		},
+		// Get one matching the query
+		getOne: function (db, query, callbackFn) {
+			api._model.getMany(db, query, function(result) {
+				if (result !== 500 && result.length) {
+					callbackFn(result[0]);
+				} else {
+					callbackFn(500);
+				}
+			});
+		},
+		update: function function_name(db, query, opt, callbackFn) {
+			db.updateOne(query,
+				{$set: { calendar: calendar, lastPush: time }},
+				function(err, result) {
+					if (err) {
+						callbackFn(500);
+						throw err;
+					}
+					if (result) {
+						callbackFn(0);
+					} else {
+						callbackFn(500);
+					}
+				});
 		}
+	},
+	// Authenticate users
+	auth: {
+		// Authenticate TAs
+		ta: function(hash, callbackFn) {
+			api._model.has(db_ta, { 'auth': String(hash) }, callbackFn);
+		},
+		// Authenticate Admins
+		admin: function(hash, callbackFn) {
+			api._model.has(db_admin, { 'auth': String(hash) }, callbackFn);
+		}
+	},
+	// Options for TAs
+	ta: {
+		// get acct info
+		get: function(hash, callbackFn) {
+			api._model.getOne(db_ta, { 'auth': String(hash) }, callbackFn);
+		},
+		// set calendar
+		setCalendar: function(hash, calendar, callbackFn) {
+			if (!((calendar) instanceof Array) || (calendar).length !== ((settings['fromto'][1] - settings['fromto'][0]) * 7 * 2)) {
+				callbackFn(400);
+				return false;
+			}
+			for (let i = 0; i < (calendar).length; i++) {
+				if ((calendar)[i] !== 0 && (calendar)[i] !== 1 && (calendar)[i] !== 2) {
+					callbackFn(400);
+					return false;
+				}
+			}
+			let time = new Date().getTime();
+			api._model.getOne(db_ta, { 'auth': String(hash) }, {$set: { calendar: calendar, lastPush: time }}, callbackFn);
+		}
+	},
+	// Options for Admin
+	admin: {
+		//
+	},
+	course: {
+		//
 	}
-	let time = new Date().getTime();
-	db_ta.updateOne({ 'auth': String(hash) },
-		{$set: { calendar: calendar, lastPush: time }},
-		function(err, result) {
-			if (err) {
-				callbackFn(500);
-				throw err;
-			}
-			if (result) {
-				callbackFn(0);
-			} else {
-				callbackFn(500);
-			}
-		});
 }
 
 function apiTaSetAcct(hash, data, callbackFn) {
@@ -371,7 +402,7 @@ module.exports = {
 			if (err) {
 				throw err;
 			}
-			db = client.db('webscheduler');
+			let db = client.db('webscheduler');
 			db_ta = db.collection("ta");
 			db_admin = db.collection("admin");
 			db_course = db.collection("course");
@@ -382,23 +413,28 @@ module.exports = {
 	ta: {
 		// Authenticate user
 		auth: function (req, res, callbackFn) {
-			apiTaAuth(req.body.auth, callbackFn);
+			api.auth.ta(req.body.auth, callbackFn);
 		},
 		// Sends user data
 		pull: function (req, res) {
-			apiTaGet(req.body.auth, function(result) {
-				if (result === false) {
-					res.status(500);
-					res.send();
+			let result = api.ta.get(req.body.auth, function(result) {
+				if (result !== 500) {
+					res.send({
+						'username': result['name'],
+						'email': result['email'],
+						'course': result['course'],
+						'privacy': result['privacy'],
+						'calendar': result['calendar'],
+						'schedule': result['schedule']
+					});
 				} else {
-					let toReturn = { 'username': result['name'], 'email': result['email'], 'course': result['course'], 'privacy': result['privacy'],  'calendar': result['calendar'], 'schedule': result['schedule']};
-					res.send(toReturn);
+					res.status(500);
 				}
 			});
 		},
 		// Saves user data
 		push: function (req, res) {
-			apiTaSetCalendar(req.body.auth, req.body.calendar, function(code) {
+			api.ta.setCalendar(req.body.auth, req.body.calendar, function(code) {
 				autoCallback(res, code);
 			});
 		},
@@ -429,7 +465,7 @@ module.exports = {
 	admin: {
 		// Authenticate admin
 		auth: function (req, res, callbackFn) {
-			apiAdminAuth(req.body.auth, callbackFn);
+			api.auth.admin(req.body.auth, callbackFn);
 		},
 		// Add a course
 		get: function(req, res) {
