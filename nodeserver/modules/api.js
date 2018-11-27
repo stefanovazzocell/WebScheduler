@@ -28,7 +28,7 @@ var db_ta, db_admin, db_course;
 */
 function genAuth(length = 20) {
 	// Removed: I l ? / : @ - . _ ~ ! $ & ' ( ) * + , ; =
-	// Length 
+	// Length
 	var pool = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789';
 	var rnd = crypto.randomBytes(length);
 	var value = new Array(length);
@@ -133,41 +133,52 @@ var api = {
 			}
 			let time = new Date().getTime();
 			api._model.getOne(db_ta, { 'auth': String(hash) }, {$set: { calendar: calendar, lastPush: time }}, callbackFn);
+		},
+		setAcct: function (hash, data, callbackFn) {
+			let reqUsername = (data['username']).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
+			let reqEmail = (data['email']).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
+			let reqPrivacy = data['privacy'];
+			if ((String(reqUsername) < 2 || String(reqUsername) > 40) ||
+				(String(reqEmail) < 5 || String(reqEmail) > 200) ||
+				(reqPrivacy !== 0 && reqPrivacy !== 1 && reqPrivacy !== 2)) {
+				console.log('API / ta.update / Failed check');
+				callbackFn(400);
+				return false;
+			}
+			db_ta.updateOne({ 'auth': String(hash) },
+				{$set: { name: String(reqUsername), email: String(reqEmail), privacy: reqPrivacy }},
+				function(err, result) {
+					if (err) {
+						callbackFn(500);
+						throw err;
+					}
+					if (result) {
+						callbackFn(0);
+					} else {
+						callbackFn(500);
+					}
+				});
 		}
 	},
 	// Options for Admin
 	admin: {
-		//
+		get: function (hash, callbackFn) {
+			db_admin.find({ 'auth': String(hash) }).toArray(function(err, result) {
+				if (err) {
+					callbackFn(false);
+					throw err;
+				}
+				if (result.length) {
+					callbackFn(result[0]);
+				} else {
+					callbackFn(false);
+				}
+			});
+		}
 	},
 	course: {
 		//
 	}
-}
-
-function apiTaSetAcct(hash, data, callbackFn) {
-	let reqUsername = (data['username']).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
-	let reqEmail = (data['email']).replace(/&/g,'_').replace(/</g,'_').replace(/>/g,'_');
-	let reqPrivacy = data['privacy'];
-	if ((String(reqUsername) < 2 || String(reqUsername) > 40) || 
-		(String(reqEmail) < 5 || String(reqEmail) > 200) ||
-		(reqPrivacy !== 0 && reqPrivacy !== 1 && reqPrivacy !== 2)) {
-		console.log('API / ta.update / Failed check');
-		callbackFn(400);
-		return false;
-	}
-	db_ta.updateOne({ 'auth': String(hash) },
-		{$set: { name: String(reqUsername), email: String(reqEmail), privacy: reqPrivacy }},
-		function(err, result) {
-			if (err) {
-				callbackFn(500);
-				throw err;
-			}
-			if (result) {
-				callbackFn(0);
-			} else {
-				callbackFn(500);
-			}
-		});
 }
 
 function apiTaDelete(hash, callbackFn) {
@@ -361,20 +372,6 @@ function apiAdminResetAuth(hash, callbackFn) {
 	apiResetAuth(hash, callbackFn, db_admin);
 }
 
-function apiAdminGet(hash, callbackFn) {
-	db_admin.find({ 'auth': String(hash) }).toArray(function(err, result) {
-			if (err) {
-				callbackFn(false);
-				throw err;
-			}
-			if (result.length) {
-				callbackFn(result[0]);
-			} else {
-				callbackFn(false);
-			}
-		});
-}
-
 function apiAdminGetCourse(course, callbackFn) {
 	db_course.find({ '_id': String(course) }).toArray(function(err, result) {
 			if (err) {
@@ -440,7 +437,7 @@ module.exports = {
 		},
 		// Updates user info
 		update: function (req, res) {
-			apiTaSetAcct(req.body.auth, {'username': req.body.username, 'email': req.body.email, 'privacy': req.body.privacy }, function(code) {
+			api.ta.setAcct(req.body.auth, {'username': req.body.username, 'email': req.body.email, 'privacy': req.body.privacy }, function(code) {
 				autoCallback(res, code);
 			});
 		},
@@ -469,7 +466,7 @@ module.exports = {
 		},
 		// Add a course
 		get: function(req, res) {
-			apiAdminGet(req.body.auth, function (result) {
+			api.admin.get(req.body.auth, function (result) {
 				if (result === false) {
 					res.status(500);
 					res.send();
