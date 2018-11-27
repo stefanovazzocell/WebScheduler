@@ -295,6 +295,22 @@ function apiAccountDelete(courseName = '') {
 	}
 }
 
+/*
+* addItem() - Triggers item addition (from a specific field)
+*/
+function addItem() {
+	add = function (x) {
+		request('itemAdd', { 'item': x }, function(data) {
+			apiGet();
+		});
+	};
+	itemVal = $('#newItem').val();
+	items = items.split(',');
+	for (var i = items.length - 1; i >= 0; i--) {
+		add(items[i]);
+	}
+}
+
 $().ready(function () {
 	// Once page ready
 	// Detect if touch enabled
