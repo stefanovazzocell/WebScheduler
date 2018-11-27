@@ -1,6 +1,6 @@
 'use strict';
 /*
-* WebScheduler (Version 0.1.0)	
+* WebScheduler (Version 0.1.0)
 * webscheduler.js - main server fuction
 * by Stefano Vazzoler (stefanovazzocell@gmail.com)
 * https://stefanovazzoler.com/
@@ -158,6 +158,9 @@ app.post('/api/admin/*', function (req, res) {
 					break;
 				case 'resetauth':
 					api.admin.resetauth(req, res);
+					break;
+				case 'itemAdd':
+					api.admin.itemAdd(req, res);
 					break;
 				case 'courseAdd':
 					api.admin.courseAdd(req, res);
