@@ -1,0 +1,31 @@
+{
+  "name": "webscheduler",
+  "version": "0.0.2",
+  "description": "The server for the UBC CPSC TA web server",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "hbs": "^4.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stefanovazzocell/WebScheduler.git"
+  },
+  "keywords": [
+    "scheduler",
+    "ta",
+    "webscheduler",
+    "server"
+  ],
+  "author": "Stefano Vazzoler (stefanovazzoler.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stefanovazzocell/WebScheduler/issues"
+  },
+  "homepage": "https://github.com/stefanovazzocell/WebScheduler#readme"
+}

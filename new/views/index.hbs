@@ -1,0 +1,117 @@
+<nav class="navbar navbar-dark bg-dark">
+  <span class="navbar-brand" style="font-size: 110%;">Scheduler</span>
+  <span class="navbar-text message" onclick="uiMessage();" style="color: #fff;"></span>
+  <button class="btn btn-outline-light btn-sm btn-only-sm" data-toggle="modal" data-target="#account">My Account</button>
+</nav>
+<div class="modal fade" id="account" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">My Account</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger">General</p>
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="btn btn-sm btn-dark" onclick="logout();">Logout</button>
+        </div><br><br>
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="btn btn-sm btn-info" onclick="toggleTouch();">Toggle touch mode</button>
+        </div>
+      </div>
+      <hr>
+      <div class="modal-body">
+        <p class="text-primary">Account</p>
+        <form onsubmit="event.preventDefault(); update(); $('#account').modal('hide');">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Name</span>
+            </div>
+            <input type="text" id="name" class="form-control" minlength="5" maxlength="200" autocomplete="off">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Email</span>
+            </div>
+            <input type="email" id="email"class="form-control" minlength="5" maxlength="40" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="privacy">Sub Privacy</label>
+            <select class="form-control" id="privacy">
+              <option value="2">Public</option>
+              <option value="1">Public (Prefer not)</option>
+              <option value="0">Hidden</option>
+            </select>
+          </div>
+          <input type="submit" class="btn btn-sm btn-primary" value="Update"></input>
+        </form>
+      </div>
+      <hr>
+      <div class="modal-body">
+        <p class="text-danger">Danger Zone!</p>
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(); $('#account').modal('hide');">Reset Password</button>
+          <button type="button" class="btn btn-sm btn-danger" onclick="deleteAccount(); $('#account').modal('hide');">Delete Account</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="subs" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Subs</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <select class="form-control" id="subid" onchange="getSubs()" style="display: none;">
+        </select><br>
+        <p id="sublist">
+          We're loading your data... (if this takes too long, try refreshing the page)
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid"><br>
+  <!-- Alerts -->
+  <div class="alert alert-danger" style="display: none;" id="alert-error">
+  </div>
+  <div class="alert alert-secondary" style="display: none;" id="alert-offline">
+    📡 You're offline. We'll keep checking for connectivity. (Last attempt at <span id="offline-lastcheck"></span>)
+  </div>
+  <div class="alert alert-warning" id="alert-loading">
+    Please wait while we load your schedule...
+  </div>
+  <!-- Mouse Message -->
+  <p style="z-index:10; position:fixed;" id="mouseMsg"></p>
+  <h4>Hello <span class="name">TA</span>,</h4>
+  <p>
+    Here's your <b class="course"></b> schedule; <span class="whatsup"></span>
+  </p>
+  <div class="btn-group btn-group-sm" role="group">
+    <button type="button" class="btn btn-sm btn-light" id="pull">Pull Schedule</button>
+    <button type="button" class="btn btn-sm btn-dark" id="push">Push Schedule</button>
+    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#subs">Find Sub</button>
+  </div><br><br>
+  <div class="btn-group btn-group-sm" id="tool" role="group">
+    <button type="button" onclick="changeTool(0);" class="btn btn-sm btn-success">Available</button>
+    <button type="button" onclick="changeTool(1);" class="btn btn-sm btn-warning font-weight-bold">Prefer Not</button>
+    <button type="button" onclick="changeTool(2);" class="btn btn-sm btn-danger">Not Available</button>
+  </div><br>
+  <span>The current mode is <b class="tool">Prefer Not</b>.</span> <span id="draft" style="display: hidden;">You are editing a local <i>draft</i> you can <a href="javascript:$('#pull').click()">retrive</a> the server version.</span><br><br>
+  <div class="table-wrapper">
+    {{> calendar}}
+  </div>
+</div><br>
