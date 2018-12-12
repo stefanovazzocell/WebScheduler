@@ -5,6 +5,7 @@
   "main": "webscheduler.js",
   "dependencies": {
     "express": "^4.16.4",
+    "hbs": "^4.0.1",
     "mailgun-js": "^0.21.0",
     "mongodb": "^3.1.8",
     "npm": "^6.4.1"

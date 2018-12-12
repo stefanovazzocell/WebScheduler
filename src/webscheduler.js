@@ -10,7 +10,9 @@
 * Require Node dependencies
 */
 
+const fs = require('fs');
 const express = require('express');
+const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const Mailgun = require('mailgun-js');
 const app = express();
@@ -82,7 +84,10 @@ gatekeeper.startup(ipresolver.getIp, function(msg) {
 /*
 * Linking dependencies
 */
+app.use('/cdn', express.static(__dirname + '/static/cdn'));
 app.use(bodyParser.json());
+app.set('view engine', 'hbs');
+app.set('views', __dirname + '/views');
 
 /*
 * Adding headers
@@ -107,13 +112,25 @@ app.use(function (req, res, next) {
 * Routes
 */
 
-// GET not allowed
-app.get('*', function (req, res) {
-	if (gatekeeper.check(req, res, 'getReq')) {
-		// Get requests not allowed
-		res.status(405);
-		res.send('GET Requests not allowed');
-	}
+// GET request handling
+app.get('/', function(req, res) {
+    res.render('index', {
+			'title': 'WebScheduler',
+			'style': 'index-style',
+			'scripts': ['ta']
+		});
+});
+app.get('/login/', function(req, res) {
+    res.render('login', {
+			'title': 'Scheduler Login',
+			'scripts': ['login']
+		});
+});
+app.get('/admin/', function(req, res) {
+    res.render('admin', {
+			'title': 'Scheduler Login',
+			'scripts': ['login']
+		});
 });
 
 // TA API request
@@ -145,35 +162,6 @@ app.post('/api/ta/*', function (req, res) {
 					res.send();
 			}
 		});
-	}
-});
-
-// Coordinator API request
-app.post('/api/admin/*', function (req, res) {
-	if (gatekeeper.check(req, res)) {
-		authenticate(req, res, function() {
-			switch (req.params[0]) {
-				case 'get':
-					api.admin.get(req, res);
-					break;
-				case 'resetauth':
-					api.admin.resetauth(req, res);
-					break;
-				case 'itemAdd':
-					api.admin.itemAdd(req, res);
-					break;
-				case 'courseAdd':
-					api.admin.courseAdd(req, res);
-					break;
-				case 'courseRemove':
-					api.admin.courseRemove(req, res);
-					break;
-				default:
-					gatekeeper.count(req);
-					res.status(400);
-					res.send();
-			}
-		}, true);
 	}
 });
 
