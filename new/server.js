@@ -65,13 +65,13 @@ const api = {
 			//
 		},
 		create: function(username, email, course) {
-			{
-				'username': username,
-				'email': email,
-				'course': course,
-				'privacy': 0,
-				'calendar': api.utils.makeCalendar(),
-				'schedule': []
+			return { // TODO
+				username: username,
+				email: email,
+				course: course,
+				privacy: 0,
+				calendar: api.utils.makeCalendar(),
+				schedule: []
 			}
 		}
 	},
@@ -82,6 +82,9 @@ const api = {
 				tmp.push(0);
 			}
 			return tmp;
+		},
+		uiMessage: function () {
+			return settings.app.messages[Math.round(Math.random() * (settings.app.messages.length - 1))];
 		}
 	}
 }
@@ -94,16 +97,18 @@ debug('Express - Setting routes');
 
 app.get('/', function(req, res) {
   res.render('index', {
-		'title': 'WebScheduler',
-		'style': 'index',
-		'scripts': ['ta']
+		title: 'WebScheduler',
+		style: 'index',
+		scripts: ['ta'],
+		message: api.utils.uiMessage()
 	});
 });
 
 app.get('/login/', function(req, res) {
   res.render('login', {
 		'title': 'WebScheduler Login',
-		'scripts': ['login']
+		'scripts': ['login'],
+		message: api.utils.uiMessage()
 	});
 });
 

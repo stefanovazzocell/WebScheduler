@@ -184,28 +184,6 @@ function isThisNow(day, time, delta = 0.5, updateUI = false) {
 }
 
 /*
-* uiMessage() - loads the custom welcome message for a TA
-*/
-function uiMessage() {
-	let messages = [
-		'<code>(string-append "Hello" "World")</code>',
-		'<code>System.out.println("Hello World");</code>',
-		'<code>printf("Hello, World");</code>',
-		'<b>g.exe 🧔</b>',
-		'<b>' + account['course'] + ' rocks! 🤘</b>',
-		'<b>Have a nice day! ⛅</b>',
-		'<b>Be awesome! ✨</b>',
-		'<b>' + account['username'].split(' ')[0].substring(0,15) + ', you\'re awesome! 😄</b>',
-		'<i>📧 Trey, we have a problem.</i>',
-		'<b>Have lots of fun! 💻</b>',
-		'<b>Autograder is on fire 🔥</b>',
-		'<b>Follow the recipe 📖</b>'
-	];
-	let message = messages[getRandom(0, messages.length -1)];
-	$('.message').html(message);
-}
-
-/*
 * drawCalendar() - Redraws the calendar
 */
 function drawCalendar() {
@@ -679,8 +657,6 @@ function setupRefresh() {
 		// Pull data (other than calendar)
 		pull(false);
 		// Load Current TA
-		// Updates the UI message
-		uiMessage();
 		// Updates the next lab message
 		yourNextClass();
 	}, 5 * 60 * 1000);
@@ -749,7 +725,6 @@ function update() {
 	account['privacy'] = parseInt($('#privacy').val());
 	request('update', { 'username': account['username'], 'email': account['email'], 'privacy': account['privacy'] }, function() {
 		pull();
-		uiMessage();
 	});
 }
 
@@ -858,7 +833,6 @@ $().ready(function () {
 		toggleTouch();
 	}
 
-	setTimeout(uiMessage, 400);
 	setupRefresh();
 
 	// Mouse Message
