@@ -104,6 +104,25 @@ app.get('/', function(req, res) {
 	});
 });
 
+app.get('/admin/', function(req, res) {
+  res.render('admin', {
+		title: 'WebScheduler Admin',
+		style: 'admin',
+		scripts: ['admin'],
+		message: api.utils.uiMessage()
+	});
+});
+
+app.get('/admin/*/', function(req, res) {
+	let course = req.params[0];
+  res.render('admin', {
+		title: 'WebScheduler ' + course,
+		style: 'admin',
+		scripts: ['admin'],
+		message: api.utils.uiMessage()
+	});
+});
+
 app.get('/login/', function(req, res) {
   res.render('login', {
 		'title': 'WebScheduler Login',

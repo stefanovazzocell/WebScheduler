@@ -1,0 +1,71 @@
+body {
+	min-width: 360px;
+}
+
+.table-wrapper {
+	overflow: auto;
+	width: 100%;
+}
+
+.table-wrapper, .message {
+	/* disabled text selection */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Day of the week */
+.dw {
+	min-width: 50px;
+}
+
+/* Selected time slot */
+.sts {
+	opacity: 0.3;
+}
+
+td:hover {
+	opacity: 0.5;
+}
+
+/* It's now! */
+.now {
+	box-shadow: inset 0 0 20px #f00;
+}
+
+hr {
+	background-color: black;
+	width: 80%;
+}
+
+td {
+	font-size: 50%;
+	font-weight: bold;
+}
+
+.message {
+	font-size: 110%;
+}
+
+.navbar-text > code {
+	color: #fbb;
+}
+
+@media only screen and (max-width: 600px) {
+	.message {
+		font-size: 85%;
+	}
+}
+
+@media only screen and (max-width: 470px) {
+	.message {
+		font-size: 65%;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	.message {
+		font-size: 40%;
+	}
+}
