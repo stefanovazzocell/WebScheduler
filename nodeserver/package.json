@@ -4,10 +4,10 @@
   "description": "The node server for a web scheduler",
   "main": "webscheduler.js",
   "dependencies": {
-    "express": "^4.16.4",
-    "mailgun-js": "^0.21.0",
-    "mongodb": "^3.1.8",
-    "npm": "^6.4.1"
+    "express": "latest",
+    "mailgun-js": "latest",
+    "mongodb": "latest",
+    "npm": "latest"
   },
   "devDependencies": {},
   "scripts": {
